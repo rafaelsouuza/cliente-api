@@ -37,8 +37,16 @@ public class UFService {
     }
 
     @Transactional
-    public UFDto salvarUF(UFDto ufDto) {
+    public UFDto salvar(UFDto ufDto) {
         UF uf = new UF();
+        copiarDtoParaEntidade(ufDto, uf);
+        uf = ufRespository.save(uf);
+        return new UFDto(uf);
+    }
+
+    @Transactional
+    public UFDto atualizar(UFDto ufDto) {
+        UF uf = ufRespository.bucarPeloCodigoUF(ufDto.getCodigoUF()).get();
         copiarDtoParaEntidade(ufDto, uf);
         uf = ufRespository.save(uf);
         return new UFDto(uf);
