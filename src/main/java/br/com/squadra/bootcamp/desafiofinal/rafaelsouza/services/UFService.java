@@ -3,6 +3,7 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.UFRespository;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.CodigoUFNaoEncontradoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,9 @@ public class UFService {
 
     @Transactional(readOnly = true)
     public UFDto buscarPeloCodigoUF(Integer codigoUF) {
-        UF ufCodigo = ufRespository.bucarPeloCodigoUF(codigoUF).get();
+
+        UF ufCodigo = ufRespository.bucarPeloCodigoUF(codigoUF).orElseThrow(
+                () -> new CodigoUFNaoEncontradoException("Codigo UF não encontrado"));
         return new UFDto(ufCodigo);
     }
 
