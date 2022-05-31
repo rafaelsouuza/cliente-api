@@ -20,7 +20,7 @@ public class UFService {
 
     @Transactional(readOnly = true)
     public List<UFDto> buscarTodosUf() {
-        List<UF> lista = ufRespository.findAll();
+        List<UF> lista = ufRespository.buscarTodosUF();
         return lista.stream().map(elemento -> new UFDto(elemento)).collect(Collectors.toList());
     }
 
@@ -50,6 +50,13 @@ public class UFService {
         copiarDtoParaEntidade(ufDto, uf);
         uf = ufRespository.save(uf);
         return new UFDto(uf);
+    }
+
+    @Transactional
+    public void deletar(Integer codigoUF) {
+        UF uf = ufRespository.bucarPeloCodigoUF(codigoUF).get();
+        uf.setStatus(0);
+        uf = ufRespository.save(uf);
     }
 
     private void copiarDtoParaEntidade(UFDto dto, UF entidade) {

@@ -4,13 +4,7 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,6 +46,13 @@ public class UFResource {
     @PutMapping
     public ResponseEntity<List<UFDto>> autualizarUF(@RequestBody UFDto ufDto) {
         ufService.atualizar(ufDto);
+        List<UFDto> lista = ufService.buscarTodosUf();
+        return ResponseEntity.ok().body(lista);
+    }
+
+    @DeleteMapping("/{codigoUF}")
+    public ResponseEntity<List<UFDto>> deletar(@PathVariable Integer codigoUF) {
+        ufService.deletar(codigoUF);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
     }
