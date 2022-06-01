@@ -1,14 +1,11 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation.UFInsertValid;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@UFInsertValid
 public class UFDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +19,6 @@ public class UFDto implements Serializable {
     @Size(max = 2, message = "O tamanho máximo é de 2 caracteres")
     private String sigla;
 
-    @PositiveOrZero
     private Integer status;
 
     public UFDto() {

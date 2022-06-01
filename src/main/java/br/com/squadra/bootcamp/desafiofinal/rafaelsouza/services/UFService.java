@@ -1,6 +1,8 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDTO;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDTO;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.UFRespository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
@@ -40,7 +42,7 @@ public class UFService {
     }
 
     @Transactional
-    public UFDto salvar(UFDto ufDto) {
+    public UFDto salvar(UFInsertDTO ufDto) {
         UF entidade = new UF();
         copiarDtoParaEntidade(ufDto, entidade);
         entidade = ufRespository.save(entidade);
@@ -48,7 +50,7 @@ public class UFService {
     }
 
     @Transactional
-    public UFDto atualizar(UFDto ufDto) {
+    public UFDto atualizar(UFUpdateDTO ufDto) {
         UF entidade = ufRespository.bucarPeloCodigoUF(ufDto.getCodigoUF()).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo UF não encontrado"));
         copiarDtoParaEntidade(ufDto, entidade);

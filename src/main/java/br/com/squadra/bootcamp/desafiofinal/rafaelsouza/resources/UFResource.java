@@ -1,6 +1,8 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDTO;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDTO;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,15 +40,15 @@ public class UFResource {
     }
 
     @PostMapping
-    public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFDto ufDto) {
-        ufService.salvar(ufDto);
+    public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFInsertDTO ufDto) {
+        UFDto novoDto = ufService.salvar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.status(HttpStatus.CREATED).body(lista);
     }
 
     @PutMapping
-    public ResponseEntity<List<UFDto>> atualizar(@RequestBody UFDto ufDto) {
-        ufService.atualizar(ufDto);
+    public ResponseEntity<List<UFDto>> atualizar(@Valid @RequestBody UFUpdateDTO ufDto) {
+        UFDto novoDto = ufService.atualizar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
     }
