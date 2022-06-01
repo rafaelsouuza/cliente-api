@@ -18,4 +18,7 @@ public interface UFRespository extends JpaRepository<UF, Integer> {
 
     @Query("SELECT c FROM UF c WHERE c.sigla = :sigla AND c.status = 1")
     Optional<UF> bucarPelaSigla(@Param("sigla") String sigla);
+
+    @Query("SELECT c FROM UF c WHERE c.nome = :nome AND c.status = 1")
+    Optional<UF> bucarPeloNome(@Param("nome") String nome);
 }

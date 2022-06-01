@@ -1,12 +1,14 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation.UFInsertValid;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@UFInsertValid
 public class UFDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
