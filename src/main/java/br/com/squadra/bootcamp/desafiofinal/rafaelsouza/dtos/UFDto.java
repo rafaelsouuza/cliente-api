@@ -2,14 +2,25 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 public class UFDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer codigoUF;
+
+    @NotBlank(message = "O campo NOME é requerido")
+    @Size(min = 3, max = 60, message = "O NOME deve ter entre 5 é 60 caracteres")
     private String nome;
+
+    @NotBlank(message = "O campo SIGLA é requerido")
+    @Size(max = 2, message = "O tamanho máximo é de 2 caracteres")
     private String sigla;
+
+    @PositiveOrZero
     private Integer status;
 
     public UFDto() {

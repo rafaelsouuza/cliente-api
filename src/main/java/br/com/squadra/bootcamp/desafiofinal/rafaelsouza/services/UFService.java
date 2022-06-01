@@ -3,7 +3,7 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.UFRespository;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.CodigoUFNaoEncontradoException;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,44 +27,46 @@ public class UFService {
 
     @Transactional(readOnly = true)
     public UFDto buscarPeloCodigoUF(Integer codigoUF) {
-
-        UF ufCodigo = ufRespository.bucarPeloCodigoUF(codigoUF).orElseThrow(
-                () -> new CodigoUFNaoEncontradoException("Codigo UF não encontrado"));
-        return new UFDto(ufCodigo);
+        UF entidade = ufRespository.bucarPeloCodigoUF(codigoUF).orElseThrow(
+                () -> new ResourceNotFoundException("Codigo UF não encontrado"));
+        return new UFDto(entidade);
     }
 
     @Transactional(readOnly = true)
     public UFDto buscarPelaSigla(String sigla) {
-        UF ufSigla = ufRespository.bucarPelaSigla(sigla).get();
-        return new UFDto(ufSigla);
+        UF entidade = ufRespository.bucarPelaSigla(sigla).orElseThrow(
+                () -> new ResourceNotFoundException("Sigla UF não encontrado"));
+        return new UFDto(entidade);
     }
 
     @Transactional
     public UFDto salvar(UFDto ufDto) {
-        UF uf = new UF();
-        copiarDtoParaEntidade(ufDto, uf);
-        uf = ufRespository.save(uf);
-        return new UFDto(uf);
+        UF entidade = new UF();
+        copiarDtoParaEntidade(ufDto, entidade);
+        entidade = ufRespository.save(entidade);
+        return new UFDto(entidade);
     }
 
     @Transactional
     public UFDto atualizar(UFDto ufDto) {
-        UF uf = ufRespository.bucarPeloCodigoUF(ufDto.getCodigoUF()).get();
-        copiarDtoParaEntidade(ufDto, uf);
-        uf = ufRespository.save(uf);
-        return new UFDto(uf);
+        UF entidade = ufRespository.bucarPeloCodigoUF(ufDto.getCodigoUF()).orElseThrow(
+                () -> new ResourceNotFoundException("Codigo UF não encontrado"));
+        copiarDtoParaEntidade(ufDto, entidade);
+        entidade = ufRespository.save(entidade);
+        return new UFDto(entidade);
     }
 
     @Transactional
     public void deletar(Integer codigoUF) {
-        UF uf = ufRespository.bucarPeloCodigoUF(codigoUF).get();
-        uf.setStatus(0);
-        uf = ufRespository.save(uf);
+        UF entidade = ufRespository.bucarPeloCodigoUF(codigoUF).orElseThrow(
+                () -> new ResourceNotFoundException("Codigo UF não encontrado"));
+        entidade.setStatus(0);
+        ufRespository.save(entidade);
     }
 
     private void copiarDtoParaEntidade(UFDto dto, UF entidade) {
-        entidade.setNome(dto.getNome());
-        entidade.setSigla(dto.getSigla());
+        entidade.setNome(dto.getNome().toUpperCase());
+        entidade.setSigla(dto.getSigla().toUpperCase());
         entidade.setStatus(dto.getStatus());
     }
 }

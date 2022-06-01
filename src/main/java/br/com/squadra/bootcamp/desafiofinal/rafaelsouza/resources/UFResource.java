@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class UFResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<UFDto>> buscarTodosUf() {
+    public ResponseEntity<List<UFDto>> buscarTodos() {
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
     }
@@ -32,19 +33,19 @@ public class UFResource {
 
     @GetMapping(params = "sigla")
     public ResponseEntity<UFDto> buscarPelaSigla(@RequestParam String sigla) {
-        UFDto uf = ufService.buscarPelaSigla(sigla);
+        UFDto uf = ufService.buscarPelaSigla(sigla.toUpperCase());
         return ResponseEntity.ok().body(uf);
     }
 
     @PostMapping
-    public ResponseEntity<List<UFDto>> salvarUF(@RequestBody UFDto ufDto) {
+    public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFDto ufDto) {
         ufService.salvar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.status(HttpStatus.CREATED).body(lista);
     }
 
     @PutMapping
-    public ResponseEntity<List<UFDto>> autualizarUF(@RequestBody UFDto ufDto) {
+    public ResponseEntity<List<UFDto>> atualizar(@RequestBody UFDto ufDto) {
         ufService.atualizar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
