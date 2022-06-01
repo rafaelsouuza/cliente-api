@@ -29,23 +29,27 @@ public class UFInsertValidator implements ConstraintValidator<UFInsertValid, UFI
 
         List<FieldMessage> lista = new ArrayList<>();
 
-        Optional<UF> validarSigla = ufRespository.bucarPelaSigla(dto.getSigla());
-        Optional<UF> validarNomeUF = ufRespository.bucarPeloNome(dto.getNome());
+        Optional<UF> validarSigla = ufRespository.bucarPelaSigla(dto.getSigla().toUpperCase());
+        Optional<UF> validarNomeUF = ufRespository.bucarPeloNome(dto.getNome().toUpperCase());
 
         // Aqui testa as validação customozidas, acrescentando objetos FieldMessage à lista
 
         if (validarSigla.isPresent()) {
-            lista.add(new FieldMessage("sigla", "Sigla de estado já existente"));
+            lista.add(new FieldMessage("sigla", "Já existe uma sigla com o nome "
+                    + validarSigla.get().getSigla() + ". Você não pode cadastrar duas siglas com o mesmo nome."));
         }
 
         if (validarNomeUF.isPresent()) {
-            lista.add(new FieldMessage("nome", "Nome de estado ja existente"));
+            lista.add(new FieldMessage("nome", "Já existe um estado com o nome "
+                    + validarNomeUF.get().getNome() + ". Você não pode cadastrar dois estados com o mesmo nome."));
         }
 
         if (dto.getStatus() != 1) {
-            lista.add(new FieldMessage("status", "O status aceita apenas 1 como valor"));
+            lista.add(new FieldMessage("status", "Ao cadastrar um novo registro. " +
+                    "O valor de status padrão é 1, pois indica que o registrito está ativo."));
         }
 
+        // Caso for capturado algum erro esse for vai inserir na lista de erros do Bean Validadtion
         for (FieldMessage elemento : lista) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(elemento.getMessagem())

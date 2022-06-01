@@ -34,17 +34,20 @@ public class UFUpdateValidator implements ConstraintValidator<UFUpdateValid, UFU
         // Aqui testa as validação customozidas, acrescentando objetos FieldMessage à lista
 
         if (validarSigla.isPresent() && validarSigla.get().getCodigoUF() != dto.getCodigoUF()) {
-            lista.add(new FieldMessage("sigla", "A sigla "  + validarSigla.get().getSigla() + " já existe"));
+            lista.add(new FieldMessage("sigla", "Já existe uma sigla com o nome "
+                    + validarSigla.get().getSigla() + ". Você não pode atualizar o registro com uma sigla já existente."));
         }
 
         if (validarNomeUF.isPresent() && validarNomeUF.get().getCodigoUF() != dto.getCodigoUF()) {
-            lista.add(new FieldMessage("nome", "Nome de estado " + validarNomeUF.get().getNome() + " já existe"));
+            lista.add(new FieldMessage("nome", "Já existe um estado com o nome "
+                    + validarNomeUF.get().getNome() + ". Você não pode atualizar o registro com um nome de estado já existente."));
         }
 
-        if (dto.getStatus() != 0 && dto.getStatus() != 1) {
-            lista.add(new FieldMessage("status", "O campo STATUS aceita apenas 0 ou 1 para atualizar"));
+        if (dto.getStatus() != 1) {
+            lista.add(new FieldMessage("status", "Você não pode atualizar o status."));
         }
 
+        // Caso for capturado algum erro esse laço vai inserir na lista de erros do Bean Validadtion
         for (FieldMessage elemento : lista) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(elemento.getMessagem())
