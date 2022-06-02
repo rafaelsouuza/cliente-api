@@ -1,6 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDTO;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.UFRespository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources.exceptions.FieldMessage;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UFUpdateValidator implements ConstraintValidator<UFUpdateValid, UFUpdateDTO> {
+public class UFUpdateValidator implements ConstraintValidator<UFUpdateValid, UFUpdateDto> {
 
     private UFRespository ufRespository;
 
@@ -25,7 +25,7 @@ public class UFUpdateValidator implements ConstraintValidator<UFUpdateValid, UFU
     }
 
     @Override
-    public boolean isValid(UFUpdateDTO dto, ConstraintValidatorContext context) {
+    public boolean isValid(UFUpdateDto dto, ConstraintValidatorContext context) {
 
         List<FieldMessage> lista = new ArrayList<>();
         Optional<UF> validarSigla = ufRespository.bucarPelaSigla(dto.getSigla().toUpperCase());

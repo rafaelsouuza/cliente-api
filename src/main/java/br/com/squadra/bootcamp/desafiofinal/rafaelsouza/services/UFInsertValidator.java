@@ -1,6 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDTO;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.UFRespository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources.exceptions.FieldMessage;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UFInsertValidator implements ConstraintValidator<UFInsertValid, UFInsertDTO> {
+public class UFInsertValidator implements ConstraintValidator<UFInsertValid, UFInsertDto> {
 
     private UFRespository ufRespository;
 
@@ -25,7 +25,7 @@ public class UFInsertValidator implements ConstraintValidator<UFInsertValid, UFI
     }
 
     @Override
-    public boolean isValid(UFInsertDTO dto, ConstraintValidatorContext context) {
+    public boolean isValid(UFInsertDto dto, ConstraintValidatorContext context) {
 
         List<FieldMessage> lista = new ArrayList<>();
 
