@@ -1,43 +1,43 @@
-package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities;
+package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
-import javax.persistence.*;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Pessoa;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = "TB_PESSOA")
-public class Pessoa implements Serializable {
+public class PessoaGetAllDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigoPessoa;
-
     private String nome;
-    @Column(name = "SOBRENOME")
-    private String sobreNome;
+    private String sobrenome;
     private Integer idade;
     private String login;
     private String senha;
-
-    @OneToMany(mappedBy = "codigoPessoa")
-    private List<Endereco> enderecos = new ArrayList<>();
     private Integer status;
 
-    public Pessoa() {
+    public PessoaGetAllDto() {
     }
 
-    public Pessoa(Integer codigoPessoa, String nome, String sobreNome, Integer idade,
-                  String login, String senha, Integer status) {
+    public PessoaGetAllDto(Integer codigoPessoa, String nome, String sobrenome, Integer idade, String login, String senha, Integer status) {
         this.codigoPessoa = codigoPessoa;
         this.nome = nome;
-        this.sobreNome = sobreNome;
+        this.sobrenome = sobrenome;
         this.idade = idade;
         this.login = login;
         this.senha = senha;
         this.status = status;
     }
+
+    public PessoaGetAllDto(Pessoa entity) {
+        this.codigoPessoa = entity.getCodigoPessoa();
+        this.nome = entity.getNome();
+        this.sobrenome = entity.getSobreNome();
+        this.idade = entity.getIdade();
+        this.login = entity.getLogin();
+        this.senha = entity.getSenha();
+        this.status = entity.getStatus();
+    }
+
 
     public Integer getCodigoPessoa() {
         return codigoPessoa;
@@ -55,12 +55,12 @@ public class Pessoa implements Serializable {
         this.nome = nome;
     }
 
-    public String getSobreNome() {
-        return sobreNome;
+    public String getSobrenome() {
+        return sobrenome;
     }
 
-    public void setSobreNome(String sobreNome) {
-        this.sobreNome = sobreNome;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public Integer getIdade() {
@@ -85,14 +85,6 @@ public class Pessoa implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public List<Endereco> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos;
     }
 
     public Integer getStatus() {
