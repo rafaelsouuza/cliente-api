@@ -44,11 +44,6 @@ public class UFInsertValidator implements ConstraintValidator<UFInsertValid, UFI
                     + validarNomeUF.get().getNome() + ". Você não pode cadastrar dois estados com o mesmo nome."));
         }
 
-        if (dto.getStatus() != 1) {
-            lista.add(new FieldMessage("status", "Ao cadastrar um novo registro. " +
-                    "O valor de status padrão é 1, pois indica que o registrito está ativo."));
-        }
-
         // Caso for capturado algum erro esse for vai inserir na lista de erros do Bean Validadtion
         for (FieldMessage elemento : lista) {
             context.disableDefaultConstraintViolation();

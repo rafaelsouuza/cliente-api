@@ -14,6 +14,6 @@ public class StatusValidator implements ConstraintValidator<StatusValid, Integer
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
 
-        return value == 1;
+        return value == 1 || value == 2;
     }
 }

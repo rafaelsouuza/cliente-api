@@ -21,7 +21,7 @@ public class Pessoa implements Serializable {
     private String login;
     private String senha;
 
-    @OneToMany(mappedBy = "codigoPessoa")
+    @OneToMany(mappedBy = "codigoPessoa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>();
     private Integer status;
 

@@ -10,15 +10,18 @@ import java.util.Optional;
 
 public interface UFRespository extends JpaRepository<UF, Integer> {
 
-    @Query("SELECT c FROM UF c WHERE c.status = 1")
+    @Query("SELECT c FROM UF c")
     List<UF> buscarTodosUF();
 
-    @Query("SELECT c FROM UF c WHERE c.codigoUF = :codigoUF AND c.status = 1")
+    @Query("SELECT c FROM UF c WHERE c.codigoUF = :codigoUF")
     Optional<UF> bucarPeloCodigoUF(@Param("codigoUF") Integer codigoUF);
 
-    @Query("SELECT c FROM UF c WHERE c.sigla = :sigla AND c.status = 1")
+    @Query("SELECT c FROM UF c WHERE c.sigla = :sigla")
     Optional<UF> bucarPelaSigla(@Param("sigla") String sigla);
 
-    @Query("SELECT c FROM UF c WHERE c.nome = :nome AND c.status = 1")
+    @Query("SELECT c FROM UF c WHERE c.nome = :nome")
     Optional<UF> bucarPeloNome(@Param("nome") String nome);
+
+    @Query("SELECT c FROM UF c WHERE c.status = :status")
+    Optional<UF> bucarPeloStatus(@Param("status") Integer status);
 }

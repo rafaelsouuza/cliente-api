@@ -6,7 +6,15 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,14 +49,14 @@ public class UFResource {
 
     @PostMapping
     public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFInsertDto ufDto) {
-        UFDto novoDto = ufService.salvar(ufDto);
+        ufService.salvar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.status(HttpStatus.CREATED).body(lista);
     }
 
     @PutMapping
     public ResponseEntity<List<UFDto>> atualizar(@Valid @RequestBody UFUpdateDto ufDto) {
-        UFDto novoDto = ufService.atualizar(ufDto);
+        ufService.atualizar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
     }

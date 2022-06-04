@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StatusValid {
 
-    String message() default "Status inválido. Por favor digite 1 no campo status.";
+    String message() default "Status inválido. Por favor digite 1 ou 2 no campo status.";
 
     Class<?>[] groups() default {};
 

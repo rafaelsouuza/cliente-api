@@ -43,10 +43,6 @@ public class UFUpdateValidator implements ConstraintValidator<UFUpdateValid, UFU
                     + validarNomeUF.get().getNome() + ". Você não pode atualizar o registro com um nome de estado já existente."));
         }
 
-        if (dto.getStatus() != 1) {
-            lista.add(new FieldMessage("status", "Você não pode atualizar o status."));
-        }
-
         // Caso for capturado algum erro esse laço vai inserir na lista de erros do Bean Validadtion
         for (FieldMessage elemento : lista) {
             context.disableDefaultConstraintViolation();

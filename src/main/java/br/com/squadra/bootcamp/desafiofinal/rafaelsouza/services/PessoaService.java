@@ -1,6 +1,13 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.*;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroGetDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.EnderecoDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioGetDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaGetAllDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Bairro;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Endereco;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Municipio;
@@ -13,6 +20,7 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.Reso
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,17 +93,16 @@ public class PessoaService {
     @Transactional
     public PessoaDto salvar(PessoaDto pessoaDto) {
         Pessoa entidade = new Pessoa();
-        copiarDtoParaEntidade(pessoaDto, entidade);
+        copiarDtoParaEntidadeSalvar(pessoaDto, entidade);
         entidade = pessoaRepository.save(entidade);
-        enderecoRepository.saveAll(entidade.getEnderecos());
         return new PessoaDto(entidade);
     }
 
     @Transactional
     public PessoaDto atualizar(PessoaDto pessoaDto) {
         Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(pessoaDto.getCodigoPessoa()).orElseThrow(
-                () -> new ResourceNotFoundException("Codigo Município não encontrado"));
-        //copiarDtoParaEntidade(pessoaDto, entidade);
+                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
+        copiarDtoParaEntidadeAtualizar(pessoaDto, entidade);
         entidade = pessoaRepository.save(entidade);
         return new PessoaDto(entidade);
     }
@@ -103,12 +110,12 @@ public class PessoaService {
     @Transactional
     public void deletar(Integer codigoMunicipio) {
         Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
-                () -> new ResourceNotFoundException("Codigo Município não encontrado"));
+                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
         entidade.setStatus(0);
         municipioRepository.save(entidade);
     }
 
-    private void copiarDtoParaEntidade(PessoaDto dto, Pessoa entidade) {
+    private void copiarDtoParaEntidadeSalvar(PessoaDto dto, Pessoa entidade) {
 
         entidade.setNome(dto.getNome());
         entidade.setSobreNome(dto.getSobrenome());
@@ -128,6 +135,57 @@ public class PessoaService {
             endereco.setComplemento(enderecoDto.getComplemento());
             endereco.setCep(enderecoDto.getCep());
             entidade.getEnderecos().add(endereco);
+        }
+    }
+
+    private void copiarDtoParaEntidadeAtualizar(PessoaDto dto, Pessoa entidade) {
+
+        entidade.setNome(dto.getNome());
+        entidade.setSobreNome(dto.getSobrenome());
+        entidade.setIdade(dto.getIdade());
+        entidade.setLogin(dto.getLogin());
+        entidade.setSenha(dto.getSenha());
+        entidade.setStatus(dto.getStatus());
+
+        List<Endereco> novoEndereco = new ArrayList<>();
+
+        for (EnderecoDto enderecoDto : dto.getEnderecos()) {
+
+            Bairro bairro = bairroRepository.buscarPeloCodigoBairro(enderecoDto.getCodigoBairro()).orElseThrow(
+                    () -> new ResourceNotFoundException("Codigo Bairro não encontrado"));
+
+            for (Endereco endereco : entidade.getEnderecos()) {
+
+                if (enderecoDto.getCodigoEndereco() == endereco.getCodigoEndereco()) {
+
+                    endereco.setCodigoPessoa(entidade);
+                    endereco.setCodigoBairro(bairro);
+                    endereco.setNomeRua(enderecoDto.getNomeRua());
+                    endereco.setNumero(enderecoDto.getNumero());
+                    endereco.setComplemento(enderecoDto.getComplemento());
+                    endereco.setCep(enderecoDto.getCep());
+
+                    Endereco enderecoNoBanco = enderecoRepository.buscarPeloCodigoEndereco(endereco.getCodigoEndereco());
+                    novoEndereco.add(enderecoNoBanco);
+
+                } else if (enderecoDto.getCodigoEndereco() == null) {
+
+                    Endereco ende = new Endereco();
+                    ende.setCodigoPessoa(entidade);
+                    ende.setCodigoBairro(bairro);
+                    ende.setNomeRua(enderecoDto.getNomeRua());
+                    ende.setNumero(enderecoDto.getNumero());
+                    ende.setComplemento(enderecoDto.getComplemento());
+                    ende.setCep(enderecoDto.getCep());
+                    novoEndereco.add(ende);
+                    break;
+                }
+            }
+        }
+        entidade.getEnderecos().clear();
+
+        for (Endereco x : novoEndereco) {
+            entidade.getEnderecos().add(x);
         }
     }
 }
