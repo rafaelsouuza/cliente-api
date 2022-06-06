@@ -2,7 +2,6 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.MunicipioService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,11 +44,23 @@ public class MunicipioResource {
         return ResponseEntity.ok().body(lista);
     }
 
+    @GetMapping(params = "nome")
+    public ResponseEntity<MunicipioDto> buscarPeloNome(@RequestParam String nome) {
+        MunicipioDto uf = municipioService.buscarPelaNome(nome);
+        return ResponseEntity.ok().body(uf);
+    }
+
+    @GetMapping(params = "status")
+    public ResponseEntity<List<MunicipioDto>> buscarPeloStatus(@RequestParam Integer status) {
+        List<MunicipioDto> uf = municipioService.buscarPeloStatus(status);
+        return ResponseEntity.ok().body(uf);
+    }
+
     @PostMapping
     public ResponseEntity<List<MunicipioDto>> salvar(@Valid @RequestBody MunicipioDto municipioDto) {
         municipioService.salvar(municipioDto);
         List<MunicipioDto> lista = municipioService.buscarTodos();
-        return ResponseEntity.status(HttpStatus.CREATED).body(lista);
+        return ResponseEntity.ok().body(lista);
     }
 
     @PutMapping

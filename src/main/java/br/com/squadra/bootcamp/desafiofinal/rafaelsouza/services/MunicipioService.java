@@ -42,6 +42,19 @@ public class MunicipioService {
         return new MunicipioDto(entidade);
     }
 
+    @Transactional(readOnly = true)
+    public MunicipioDto buscarPelaNome(String nome) {
+        Municipio entidade = municipioRepository.bucarPeloNome(nome).orElseThrow(
+                () -> new ResourceNotFoundException("Nome de Município não encontrado"));
+        return new MunicipioDto(entidade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MunicipioDto> buscarPeloStatus(Integer status) {
+        List<Municipio> lista = municipioRepository.bucarPeloStatus(status);
+        return lista.stream().map(elemento -> new MunicipioDto(elemento)).collect(Collectors.toList());
+    }
+
     @Transactional
     public MunicipioDto salvar(MunicipioDto municipioDto) {
         Municipio entidade = new Municipio();
@@ -63,7 +76,7 @@ public class MunicipioService {
     public void deletar(Integer codigoMunicipio) {
         Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Município não encontrado"));
-        entidade.setStatus(0);
+        entidade.setStatus(2);
         municipioRepository.save(entidade);
     }
 

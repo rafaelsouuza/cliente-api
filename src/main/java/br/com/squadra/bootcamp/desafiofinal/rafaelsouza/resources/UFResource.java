@@ -4,7 +4,6 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,11 +46,23 @@ public class UFResource {
         return ResponseEntity.ok().body(uf);
     }
 
+    @GetMapping(params = "nome")
+    public ResponseEntity<UFDto> buscarPeloNome(@RequestParam String nome) {
+        UFDto uf = ufService.buscarPelaNome(nome.toUpperCase());
+        return ResponseEntity.ok().body(uf);
+    }
+
+    @GetMapping(params = "status")
+    public ResponseEntity<List<UFDto>> buscarPeloStatus(@RequestParam Integer status) {
+        List<UFDto> uf = ufService.buscarPeloStatus(status);
+        return ResponseEntity.ok().body(uf);
+    }
+
     @PostMapping
     public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFInsertDto ufDto) {
         ufService.salvar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
-        return ResponseEntity.status(HttpStatus.CREATED).body(lista);
+        return ResponseEntity.ok().body(lista);
     }
 
     @PutMapping

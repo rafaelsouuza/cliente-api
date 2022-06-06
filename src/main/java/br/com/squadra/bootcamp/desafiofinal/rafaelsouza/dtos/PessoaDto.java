@@ -2,7 +2,12 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Endereco;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Pessoa;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +16,31 @@ public class PessoaDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer codigoPessoa;
+
+    @NotBlank(message = "O campo NOME é requerido")
+    @Size(min = 3, max = 256, message = "O NOME deve ter entre 5 é 256 caracteres")
     private String nome;
+
+    @NotBlank(message = "O campo SOBRENOME é requerido")
+    @Size(min = 3, max = 256, message = "O SOBRENOME deve ter entre 5 é 256 caracteres")
     private String sobrenome;
+
+    @Positive(message = "A idade não pode ser nagativa")
     private Integer idade;
+
+
+    @NotBlank(message = "O campo LOGIN é requerido")
+    @Size(min = 4, max = 50, message = "O LOGIN deve ter entre 5 é 50 caracteres")
     private String login;
+
+    @NotBlank(message = "O campo SENHA é requerido")
+    @Size(min = 4, max = 50, message = "A SENHA deve ter entre 5 é 50 caracteres")
     private String senha;
+
+    @Valid
     private List<EnderecoDto> enderecos = new ArrayList<>();
+
+    @StatusValid
     private Integer status;
 
     public PessoaDto() {

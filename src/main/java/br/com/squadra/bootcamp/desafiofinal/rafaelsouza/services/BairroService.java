@@ -46,6 +46,19 @@ public class BairroService {
         return new BairroDto(entidade);
     }
 
+    @Transactional(readOnly = true)
+    public BairroDto buscarPelaNome(String nome) {
+        Bairro entidade = bairroRepository.bucarPeloNome(nome).orElseThrow(
+                () -> new ResourceNotFoundException("Nome de Bairro não encontrado"));
+        return new BairroDto(entidade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BairroDto> buscarPeloStatus(Integer status) {
+        List<Bairro> lista = bairroRepository.bucarPeloStatus(status);
+        return lista.stream().map(elemento -> new BairroDto(elemento)).collect(Collectors.toList());
+    }
+
     @Transactional
     public BairroDto salvar(BairroDto bairroDto) {
         Bairro entidade = new Bairro();

@@ -48,8 +48,24 @@ public class PessoaService {
 
     @Transactional(readOnly = true)
     public List<PessoaGetAllDto> buscarTodos() {
+
         List<Pessoa> lista = pessoaRepository.buscarTodasPessoa();
         return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PessoaGetAllDto> buscarTodosPeloNome(String nome) {
+
+        List<Pessoa> lista = pessoaRepository.buscarPeloNome(nome);
+        return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PessoaDto buscarPeloLogin(String login) {
+
+        Pessoa entidade = pessoaRepository.buscarPeloLogin(login).orElseThrow(
+                () -> new ResourceNotFoundException("Login não encontrado"));
+        return buscarPessoaComEndereco(entidade);
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +73,44 @@ public class PessoaService {
 
         Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(codigoPessoa).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
+        return buscarPessoaComEndereco(entidade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PessoaGetAllDto> buscarPeloStatus(Integer status) {
+        List<Pessoa> lista = pessoaRepository.bucarPeloStatus(status);
+        return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PessoaDto salvar(PessoaDto pessoaDto) {
+
+        Pessoa entidade = new Pessoa();
+        copiarDtoParaEntidadeSalvar(pessoaDto, entidade);
+        entidade = pessoaRepository.save(entidade);
+        return new PessoaDto(entidade);
+    }
+
+    @Transactional
+    public PessoaDto atualizar(PessoaDto pessoaDto) {
+
+        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(pessoaDto.getCodigoPessoa()).orElseThrow(
+                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
+        copiarDtoParaEntidadeAtualizar(pessoaDto, entidade);
+        entidade = pessoaRepository.save(entidade);
+        return new PessoaDto(entidade);
+    }
+
+    @Transactional
+    public void deletar(Integer codigoMunicipio) {
+
+        Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
+                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
+        entidade.setStatus(0);
+        municipioRepository.save(entidade);
+    }
+
+    private PessoaDto buscarPessoaComEndereco(Pessoa entidade) {
         PessoaDto dto = new PessoaDto(entidade);
 
         for (Endereco elementoLista : entidade.getEnderecos()) {
@@ -90,31 +144,6 @@ public class PessoaService {
         return dto;
     }
 
-    @Transactional
-    public PessoaDto salvar(PessoaDto pessoaDto) {
-        Pessoa entidade = new Pessoa();
-        copiarDtoParaEntidadeSalvar(pessoaDto, entidade);
-        entidade = pessoaRepository.save(entidade);
-        return new PessoaDto(entidade);
-    }
-
-    @Transactional
-    public PessoaDto atualizar(PessoaDto pessoaDto) {
-        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(pessoaDto.getCodigoPessoa()).orElseThrow(
-                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
-        copiarDtoParaEntidadeAtualizar(pessoaDto, entidade);
-        entidade = pessoaRepository.save(entidade);
-        return new PessoaDto(entidade);
-    }
-
-    @Transactional
-    public void deletar(Integer codigoMunicipio) {
-        Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
-                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
-        entidade.setStatus(0);
-        municipioRepository.save(entidade);
-    }
-
     private void copiarDtoParaEntidadeSalvar(PessoaDto dto, Pessoa entidade) {
 
         entidade.setNome(dto.getNome());
@@ -125,15 +154,11 @@ public class PessoaService {
         entidade.setStatus(dto.getStatus());
 
         for (EnderecoDto enderecoDto : dto.getEnderecos()) {
+
             Endereco endereco = new Endereco();
             Bairro bairro = bairroRepository.buscarPeloCodigoBairro(enderecoDto.getCodigoBairro()).orElseThrow(
                     () -> new ResourceNotFoundException("Codigo Bairro não encontrado"));
-            endereco.setCodigoPessoa(entidade);
-            endereco.setCodigoBairro(bairro);
-            endereco.setNomeRua(enderecoDto.getNomeRua());
-            endereco.setNumero(enderecoDto.getNumero());
-            endereco.setComplemento(enderecoDto.getComplemento());
-            endereco.setCep(enderecoDto.getCep());
+            copiarEndereoDtoParaEntidade(endereco, entidade, bairro, enderecoDto);
             entidade.getEnderecos().add(endereco);
         }
     }
@@ -155,28 +180,16 @@ public class PessoaService {
                     () -> new ResourceNotFoundException("Codigo Bairro não encontrado"));
 
             for (Endereco endereco : entidade.getEnderecos()) {
-
                 if (enderecoDto.getCodigoEndereco() == endereco.getCodigoEndereco()) {
 
-                    endereco.setCodigoPessoa(entidade);
-                    endereco.setCodigoBairro(bairro);
-                    endereco.setNomeRua(enderecoDto.getNomeRua());
-                    endereco.setNumero(enderecoDto.getNumero());
-                    endereco.setComplemento(enderecoDto.getComplemento());
-                    endereco.setCep(enderecoDto.getCep());
-
+                    copiarEndereoDtoParaEntidade(endereco, entidade, bairro, enderecoDto);
                     Endereco enderecoNoBanco = enderecoRepository.buscarPeloCodigoEndereco(endereco.getCodigoEndereco());
                     novoEndereco.add(enderecoNoBanco);
 
                 } else if (enderecoDto.getCodigoEndereco() == null) {
 
                     Endereco ende = new Endereco();
-                    ende.setCodigoPessoa(entidade);
-                    ende.setCodigoBairro(bairro);
-                    ende.setNomeRua(enderecoDto.getNomeRua());
-                    ende.setNumero(enderecoDto.getNumero());
-                    ende.setComplemento(enderecoDto.getComplemento());
-                    ende.setCep(enderecoDto.getCep());
+                    copiarEndereoDtoParaEntidade(ende, entidade, bairro, enderecoDto);
                     novoEndereco.add(ende);
                     break;
                 }
@@ -184,8 +197,17 @@ public class PessoaService {
         }
         entidade.getEnderecos().clear();
 
-        for (Endereco x : novoEndereco) {
-            entidade.getEnderecos().add(x);
+        for (Endereco item : novoEndereco) {
+            entidade.getEnderecos().add(item);
         }
+    }
+
+    private void copiarEndereoDtoParaEntidade(Endereco endereco, Pessoa entidade, Bairro bairro, EnderecoDto enderecoDto) {
+        endereco.setCodigoPessoa(entidade);
+        endereco.setCodigoBairro(bairro);
+        endereco.setNomeRua(enderecoDto.getNomeRua());
+        endereco.setNumero(enderecoDto.getNumero());
+        endereco.setComplemento(enderecoDto.getComplemento());
+        endereco.setCep(enderecoDto.getCep());
     }
 }

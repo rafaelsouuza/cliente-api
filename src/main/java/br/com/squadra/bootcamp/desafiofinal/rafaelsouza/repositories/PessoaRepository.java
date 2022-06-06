@@ -10,10 +10,19 @@ import java.util.Optional;
 
 public interface PessoaRepository extends JpaRepository<Pessoa, Integer> {
 
-    @Query("SELECT c FROM Pessoa c WHERE c.codigoPessoa = :codigoPessoa AND c.status = 1")
+    @Query("SELECT c FROM Pessoa c WHERE c.codigoPessoa = :codigoPessoa")
     Optional<Pessoa> buscarPeloCodigoPessoa(@Param("codigoPessoa") Integer codigoPessoa);
 
-    @Query("SELECT c FROM Pessoa c WHERE c.status = 1")
+    @Query("SELECT c FROM Pessoa c")
     List<Pessoa> buscarTodasPessoa();
+
+    @Query("SELECT c FROM Pessoa c WHERE c.nome = :nome")
+    List<Pessoa> buscarPeloNome(@Param("nome") String nome);
+
+    @Query("SELECT c FROM Pessoa c WHERE c.login = :login")
+    Optional<Pessoa> buscarPeloLogin(@Param("login") String login);
+
+    @Query("SELECT c FROM Pessoa c WHERE c.status = :status")
+    List<Pessoa> bucarPeloStatus(@Param("status") Integer status);
 
 }

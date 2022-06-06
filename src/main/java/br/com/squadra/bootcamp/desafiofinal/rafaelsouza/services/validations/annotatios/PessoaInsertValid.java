@@ -1,6 +1,6 @@
-package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation;
+package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFUpdateValidator;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.PessoaInsertValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,12 +9,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UFUpdateValidator.class)
+@Constraint(validatedBy = PessoaInsertValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UFUpdateValid {
+public @interface PessoaInsertValid {
 
-    String message() default "Validation error";
+    String message() default "O Login já existe. Por favor escolha outro Login.";
 
     Class<?>[] groups() default {};
 

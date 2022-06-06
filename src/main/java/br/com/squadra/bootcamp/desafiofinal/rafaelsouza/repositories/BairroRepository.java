@@ -10,13 +10,19 @@ import java.util.Optional;
 
 public interface BairroRepository extends JpaRepository<Bairro, Integer> {
 
-    @Query("SELECT c FROM Bairro c WHERE c.codigoBairro = :codigoBairro AND c.status = 1")
+    @Query("SELECT c FROM Bairro c WHERE c.codigoBairro = :codigoBairro")
     Optional<Bairro> buscarPeloCodigoBairro(@Param("codigoBairro") Integer codigoBairro);
 
-    @Query("SELECT c FROM Bairro c WHERE c.status = 1")
+    @Query("SELECT c FROM Bairro c")
     List<Bairro> buscarTodosBairro();
 
-    @Query("SELECT c FROM Bairro c WHERE c.codigoMunicipio.codigoMunicipio = :codigoMunicipio AND c.status = 1")
+    @Query("SELECT c FROM Bairro c WHERE c.codigoMunicipio.codigoMunicipio = :codigoMunicipio")
     List<Bairro> buscarTodosPeloCodigoMunicipio(@Param("codigoMunicipio") Integer codigoMunicipio);
+
+    @Query("SELECT c FROM Bairro c WHERE c.nome = :nome")
+    Optional<Bairro> bucarPeloNome(@Param("nome") String nome);
+
+    @Query("SELECT c FROM Bairro c WHERE c.status = :status")
+    List<Bairro> bucarPeloStatus(@Param("status") Integer status);
 
 }

@@ -41,6 +41,19 @@ public class UFService {
         return new UFDto(entidade);
     }
 
+    @Transactional(readOnly = true)
+    public UFDto buscarPelaNome(String nome) {
+        UF entidade = ufRespository.bucarPeloNome(nome).orElseThrow(
+                () -> new ResourceNotFoundException("Nome de UF não encontrado"));
+        return new UFDto(entidade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UFDto> buscarPeloStatus(Integer status) {
+        List<UF> lista = ufRespository.bucarPeloStatus(status);
+        return lista.stream().map(elemento -> new UFDto(elemento)).collect(Collectors.toList());
+    }
+
     @Transactional
     public UFDto salvar(UFInsertDto ufDto) {
         UF entidade = new UF();
@@ -62,7 +75,7 @@ public class UFService {
     public void deletar(Integer codigoUF) {
         UF entidade = ufRespository.bucarPeloCodigoUF(codigoUF).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo UF não encontrado"));
-        entidade.setStatus(0);
+        entidade.setStatus(2);
         ufRespository.save(entidade);
     }
 

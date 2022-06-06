@@ -1,6 +1,6 @@
-package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services;
+package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation.StatusValid;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

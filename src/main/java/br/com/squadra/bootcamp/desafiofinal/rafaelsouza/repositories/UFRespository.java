@@ -23,5 +23,5 @@ public interface UFRespository extends JpaRepository<UF, Integer> {
     Optional<UF> bucarPeloNome(@Param("nome") String nome);
 
     @Query("SELECT c FROM UF c WHERE c.status = :status")
-    Optional<UF> bucarPeloStatus(@Param("status") Integer status);
+    List<UF> bucarPeloStatus(@Param("status") Integer status);
 }

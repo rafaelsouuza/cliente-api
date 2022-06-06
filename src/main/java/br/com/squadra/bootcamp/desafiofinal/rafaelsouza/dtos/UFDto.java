@@ -1,7 +1,7 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation.StatusValid;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

@@ -1,7 +1,7 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Bairro;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validation.StatusValid;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
