@@ -4,6 +4,8 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -12,15 +14,23 @@ public class UFDto implements Serializable {
 
     private Integer codigoUF;
 
-    @NotBlank(message = "O campo NOME é requerido")
-    @Size(min = 3, max = 60, message = "O NOME deve ter entre 5 é 60 caracteres")
+    @NotBlank(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo NOME é obrigatório.")
+    @Size(min = 3, max = 60, message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo NOME deve ter o tamanho entre 3 é 60 caracteres.")
+    @Pattern(regexp = "[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$", message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo NOME aceita apenas letras.")
     private String nome;
 
-    @NotBlank(message = "O campo SIGLA é requerido")
-    @Size(max = 2, message = "O tamanho máximo é de 2 caracteres")
+    @NotBlank(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo SIGLA é obrigatório.")
+    @Size(max = 2, message = "ão foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo SIGLA dever ter o tamanho máximo de 2 caracteres.")
+    @Pattern(regexp = "[A-Za]+$", message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo SIGLA aceita apenas letras.")
     private String sigla;
 
-    @StatusValid
+    @NotNull(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo STATUS é obrigatório.")
+    @StatusValid(message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo STATUS aceita apenas o valor inteiro 1 - (ATIVADO) ou 2 - (DESATIVADO).")
     private Integer status;
 
     public UFDto() {

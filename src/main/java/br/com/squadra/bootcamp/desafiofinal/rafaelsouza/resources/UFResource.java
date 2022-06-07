@@ -1,8 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFInsertDto;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFUpdateDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,44 +27,40 @@ public class UFResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<UFDto>> buscarTodos() {
-        List<UFDto> lista = ufService.buscarTodosUf();
-        return ResponseEntity.ok().body(lista);
-    }
+    public ResponseEntity<?> buscarPorParametros(
+            @RequestParam(value = "codigoUF", required = false) Integer codigoUf,
+            @RequestParam(value = "sigla", required = false) String sigla,
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "status", required = false) Integer status
+    ) {
+        List<UFDto> buscarTodosPeloStatus = ufService.buscarPeloStatus(status);
+        if (codigoUf == null && sigla == null && nome == null && status != null) {
+            return ResponseEntity.ok().body(buscarTodosPeloStatus);
+        }
 
-    @GetMapping(params = "codigoUF")
-    public ResponseEntity<UFDto> buscarPeloCodigoUF(@RequestParam Integer codigoUF) {
-        UFDto uf = ufService.buscarPeloCodigoUF(codigoUF);
-        return ResponseEntity.ok().body(uf);
-    }
+        List<UFDto> buscarTodos = ufService.buscarTodosUf();
+        if (codigoUf == null && sigla == null && nome == null) {
+            return ResponseEntity.ok().body(buscarTodos);
+        }
 
-    @GetMapping(params = "sigla")
-    public ResponseEntity<UFDto> buscarPelaSigla(@RequestParam String sigla) {
-        UFDto uf = ufService.buscarPelaSigla(sigla.toUpperCase());
-        return ResponseEntity.ok().body(uf);
-    }
-
-    @GetMapping(params = "nome")
-    public ResponseEntity<UFDto> buscarPeloNome(@RequestParam String nome) {
-        UFDto uf = ufService.buscarPelaNome(nome.toUpperCase());
-        return ResponseEntity.ok().body(uf);
-    }
-
-    @GetMapping(params = "status")
-    public ResponseEntity<List<UFDto>> buscarPeloStatus(@RequestParam Integer status) {
-        List<UFDto> uf = ufService.buscarPeloStatus(status);
-        return ResponseEntity.ok().body(uf);
+        List<UFDto> buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
+        for (UFDto item : buscaPersonalizada) {
+            if (buscaPersonalizada.size() > 0) {
+                return ResponseEntity.ok().body(item);
+            }
+        }
+        return ResponseEntity.ok().body(buscaPersonalizada);
     }
 
     @PostMapping
-    public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFInsertDto ufDto) {
+    public ResponseEntity<List<UFDto>> salvar(@Valid @RequestBody UFDto ufDto) {
         ufService.salvar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);
     }
 
     @PutMapping
-    public ResponseEntity<List<UFDto>> atualizar(@Valid @RequestBody UFUpdateDto ufDto) {
+    public ResponseEntity<List<UFDto>> atualizar(@Valid @RequestBody UFDto ufDto) {
         ufService.atualizar(ufDto);
         List<UFDto> lista = ufService.buscarTodosUf();
         return ResponseEntity.ok().body(lista);

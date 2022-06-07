@@ -30,8 +30,9 @@ public class MunicipioService {
     }
 
     @Transactional(readOnly = true)
-    public List<MunicipioDto> buscarTodosPeloCodigoUF(Integer codigoUF) {
-        List<Municipio> lista = municipioRepository.buscarTodosPeloCodigoUF(codigoUF);
+    public List<MunicipioDto> buscarPorParametros(Integer codigoMunicipio, Integer codigoUf, String nome, Integer status) {
+
+        List<Municipio> lista = municipioRepository.buscarPorParametro(codigoMunicipio, codigoUf, nome, status);
         return lista.stream().map(elemento -> new MunicipioDto(elemento)).collect(Collectors.toList());
     }
 
@@ -40,19 +41,6 @@ public class MunicipioService {
         Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Município não encontrado"));
         return new MunicipioDto(entidade);
-    }
-
-    @Transactional(readOnly = true)
-    public MunicipioDto buscarPelaNome(String nome) {
-        Municipio entidade = municipioRepository.bucarPeloNome(nome).orElseThrow(
-                () -> new ResourceNotFoundException("Nome de Município não encontrado"));
-        return new MunicipioDto(entidade);
-    }
-
-    @Transactional(readOnly = true)
-    public List<MunicipioDto> buscarPeloStatus(Integer status) {
-        List<Municipio> lista = municipioRepository.bucarPeloStatus(status);
-        return lista.stream().map(elemento -> new MunicipioDto(elemento)).collect(Collectors.toList());
     }
 
     @Transactional

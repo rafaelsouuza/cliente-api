@@ -16,13 +16,17 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
     @Query("SELECT c FROM Municipio c")
     List<Municipio> buscarTodosMunicipio();
 
-    @Query("SELECT c FROM Municipio c WHERE c.codigoUF.codigoUF = :codigoUF")
-    List<Municipio> buscarTodosPeloCodigoUF(@Param("codigoUF") Integer codigoUF);
-
-    @Query("SELECT c FROM Municipio c WHERE c.nome = :nome")
-    Optional<Municipio> bucarPeloNome(@Param("nome") String nome);
-
-    @Query("SELECT c FROM Municipio c WHERE c.status = :status")
-    List<Municipio> bucarPeloStatus(@Param("status") Integer status);
+    @Query("SELECT c FROM Municipio c WHERE 1 = 1 AND "
+            +   "(:codigoMunicipio IS NULL OR c.codigoMunicipio = :codigoMunicipio) AND "
+            +   "(:codigoUF IS NULL OR c.codigoUF.codigoUF = :codigoUF) AND "
+            +   "(:nome IS NULL OR c.nome = :nome) AND "
+            +   "(:status IS NULL OR c.status = :status)"
+    )
+    List<Municipio> buscarPorParametro(
+            @Param("codigoMunicipio") Integer codigoMunicipio,
+            @Param("codigoUF") Integer codigoUF,
+            @Param("nome") String nome,
+            @Param("status") Integer status
+    );
 
 }

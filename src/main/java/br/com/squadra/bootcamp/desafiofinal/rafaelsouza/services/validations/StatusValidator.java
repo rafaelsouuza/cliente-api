@@ -13,7 +13,10 @@ public class StatusValidator implements ConstraintValidator<StatusValid, Integer
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-
-        return value == 1 || value == 2;
+        boolean validar = true;
+        if (value == null || value != 1 && value != 2) {
+            validar = false;
+        }
+        return validar;
     }
 }

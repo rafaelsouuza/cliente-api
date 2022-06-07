@@ -27,33 +27,40 @@ public class MunicipioResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<MunicipioDto>> buscarTodos() {
-        List<MunicipioDto> lista = municipioService.buscarTodos();
-        return ResponseEntity.ok().body(lista);
-    }
+    public ResponseEntity<?> buscarPorParametros(
+            @RequestParam(value = "codigoMunicipio", required = false) Integer codigoMunicipio,
+            @RequestParam(value = "codigoUF", required = false) Integer codigoUF,
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "status", required = false) Integer status
+    ) {
+        List<MunicipioDto> buscaPersonalizada;
+        // Buscar Pelo Status do Município
+        if (codigoMunicipio == null && codigoUF == null && nome == null && status != null) {
+            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "codigoMunicipio")
-    public ResponseEntity<MunicipioDto> buscarPeloCodigoMunicipio(@RequestParam Integer codigoMunicipio) {
-        MunicipioDto municipioDto = municipioService.buscarPeloCodigoMunicipio(codigoMunicipio);
-        return ResponseEntity.ok().body(municipioDto);
-    }
+        // Buscar Todos Município
+        if (codigoMunicipio == null && codigoUF == null && nome == null) {
+            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "codigoUF")
-    public ResponseEntity<List<MunicipioDto>> buscarTodosPeloCodigoUF(@RequestParam Integer codigoUF) {
-        List<MunicipioDto> lista = municipioService.buscarTodosPeloCodigoUF(codigoUF);
-        return ResponseEntity.ok().body(lista);
-    }
+        //Buscar pelo codigoUF
+        if (codigoMunicipio == null && nome == null) {
+            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "nome")
-    public ResponseEntity<MunicipioDto> buscarPeloNome(@RequestParam String nome) {
-        MunicipioDto uf = municipioService.buscarPelaNome(nome);
-        return ResponseEntity.ok().body(uf);
-    }
+        //Buscar pelo codigoMunicipio
+        if (nome == null) {
+            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada.get(0));
+        }
 
-    @GetMapping(params = "status")
-    public ResponseEntity<List<MunicipioDto>> buscarPeloStatus(@RequestParam Integer status) {
-        List<MunicipioDto> uf = municipioService.buscarPeloStatus(status);
-        return ResponseEntity.ok().body(uf);
+        // Busca por todos parâmetros
+        buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+        return ResponseEntity.ok().body(buscaPersonalizada);
     }
 
     @PostMapping

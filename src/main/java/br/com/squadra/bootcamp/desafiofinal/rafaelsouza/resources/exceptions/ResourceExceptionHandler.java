@@ -1,5 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources.exceptions;
 
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.DataIntegrityException;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,17 @@ public class ResourceExceptionHandler {
         for (FieldError elemento : e.getBindingResult().getFieldErrors()) {
             err.adicionarErros(elemento.getField(), elemento.getDefaultMessage());
         }
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<StandardError> recursoNaoEncontrado(DataIntegrityException e) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError();
+        err.setStatus(status.value());
+        err.setMensagem(e.getMessage());
 
         return ResponseEntity.status(status).body(err);
     }
