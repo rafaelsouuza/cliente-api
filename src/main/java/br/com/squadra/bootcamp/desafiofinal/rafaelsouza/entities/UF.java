@@ -1,10 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -13,7 +9,15 @@ public class UF implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "SEQUENCE_UF"
+    )
+    @SequenceGenerator(
+            name = "SEQUENCE_UF",
+            allocationSize = 1
+    )
+    @Column(name = "CODIGO_UF")
     private Integer codigoUF;
     private String nome;
     private String sigla;

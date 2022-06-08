@@ -11,10 +11,19 @@ public class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "SEQUENCE_PESSOA"
+    )
+    @SequenceGenerator(
+            name = "SEQUENCE_PESSOA",
+            allocationSize = 1
+    )
+    @Column(name = "CODIGO_PESSOA")
     private Integer codigoPessoa;
 
     private String nome;
+
     @Column(name = "SOBRENOME")
     private String sobreNome;
     private Integer idade;

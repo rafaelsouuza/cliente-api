@@ -42,12 +42,6 @@ public class UFService {
         return new UFDto(entidade);
     }
 
-    @Transactional(readOnly = true)
-    public List<UFDto> buscarPeloStatus(Integer status) {
-        List<UF> lista = ufRespository.bucarPeloStatus(status);
-        return lista.stream().map(elemento -> new UFDto(elemento)).collect(Collectors.toList());
-    }
-
     @Transactional
     public UFDto salvar(UFDto ufDto) {
         validarPorSiglaENome(ufDto);

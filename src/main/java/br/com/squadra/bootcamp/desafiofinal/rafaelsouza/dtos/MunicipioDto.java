@@ -3,9 +3,7 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Municipio;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 public class MunicipioDto implements Serializable {
@@ -13,14 +11,26 @@ public class MunicipioDto implements Serializable {
 
     private Integer codigoMunicipio;
 
-    @Min(value = 0, message = "O campo codigo CÓDIGO UF deve ser um número positivo")
+    @NotNull(message = "Não foi possível incluir MUNICÍPIO no banco de dados." +
+            "<br>Motivo: o campo codigoUF é obrigatório."
+    )
+    @Positive(message = "O campo codigoUF deve ser um número positivo")
     private Integer codigoUF;
 
-    @NotBlank(message = "O campo NOME é requerido")
-    @Size(min = 3, max = 60, message = "O NOME deve ter entre 5 é 60 caracteres")
+    @NotBlank(message = "Não foi possível incluir MUNICÍPIO no banco de dados." +
+            "<br>Motivo: o campo NOME é obrigatório."
+    )
+    @Size(min = 3, max = 60, message = "Não foi possível incluir MUNICÍPIO no banco de dados." +
+            "<br>Motivo: O campo NOME deve ter o tamanho entre 3 é 256 caracteres."
+    )
     private String nome;
 
-    @StatusValid
+    @NotNull(message = "Não foi possível incluir MUNICÍPIO no banco de dados." +
+            "<br>Motivo: o campo STATUS é obrigatório."
+    )
+    @StatusValid(message = "Não foi possível incluir MUNICÍPIO no banco de dados." +
+            "<br>Motivo: O campo STATUS aceita apenas o valor inteiro 1 - (ATIVADO) ou 2 - (DESATIVADO)."
+    )
     private Integer status;
 
     public MunicipioDto() {

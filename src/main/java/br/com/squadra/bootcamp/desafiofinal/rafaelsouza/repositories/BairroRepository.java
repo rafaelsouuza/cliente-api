@@ -17,12 +17,19 @@ public interface BairroRepository extends JpaRepository<Bairro, Integer> {
     List<Bairro> buscarTodosBairro();
 
     @Query("SELECT c FROM Bairro c WHERE c.codigoMunicipio.codigoMunicipio = :codigoMunicipio")
-    List<Bairro> buscarTodosPeloCodigoMunicipio(@Param("codigoMunicipio") Integer codigoMunicipio);
+    List<Bairro> buscarPeloCodigoMunicipio(@Param("codigoMunicipio") Integer codigoMunicipio);
 
-    @Query("SELECT c FROM Bairro c WHERE c.nome = :nome")
-    Optional<Bairro> bucarPeloNome(@Param("nome") String nome);
-
-    @Query("SELECT c FROM Bairro c WHERE c.status = :status")
-    List<Bairro> bucarPeloStatus(@Param("status") Integer status);
+    @Query("SELECT c FROM Bairro c WHERE 1 = 1 AND "
+            +   "(:codigoBairro IS NULL OR c.codigoBairro = :codigoBairro) AND "
+            +   "(:codigoMunicipio IS NULL OR c.codigoMunicipio.codigoMunicipio = :codigoMunicipio) AND "
+            +   "(:nome IS NULL OR c.nome = :nome) AND "
+            +   "(:status IS NULL OR c.status = :status)"
+    )
+    List<Bairro> buscarPorParametro(
+            @Param("codigoBairro") Integer codigoBairro,
+            @Param("codigoMunicipio") Integer codigoMunicipio,
+            @Param("nome") String nome,
+            @Param("status") Integer status
+    );
 
 }

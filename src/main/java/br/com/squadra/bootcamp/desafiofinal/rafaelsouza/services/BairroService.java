@@ -7,6 +7,7 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Bairro;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Municipio;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.BairroRepository;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.DataIntegrityException;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,9 @@ public class BairroService {
     }
 
     @Transactional(readOnly = true)
-    public List<BairroDto> buscarPeloCodigoMunicipio(Integer codigoMunicipio) {
-        List<Bairro> lista = bairroRepository.buscarTodosPeloCodigoMunicipio(codigoMunicipio);
+    public List<BairroDto> buscarPorParametros(Integer codigoBairro, Integer codigoMunicipio, String nome, Integer status) {
+
+        List<Bairro> lista = bairroRepository.buscarPorParametro(codigoBairro, codigoMunicipio, nome, status);
         return lista.stream().map(elemento -> new BairroDto(elemento)).collect(Collectors.toList());
     }
 
@@ -46,21 +48,9 @@ public class BairroService {
         return new BairroDto(entidade);
     }
 
-    @Transactional(readOnly = true)
-    public BairroDto buscarPelaNome(String nome) {
-        Bairro entidade = bairroRepository.bucarPeloNome(nome).orElseThrow(
-                () -> new ResourceNotFoundException("Nome de Bairro não encontrado"));
-        return new BairroDto(entidade);
-    }
-
-    @Transactional(readOnly = true)
-    public List<BairroDto> buscarPeloStatus(Integer status) {
-        List<Bairro> lista = bairroRepository.bucarPeloStatus(status);
-        return lista.stream().map(elemento -> new BairroDto(elemento)).collect(Collectors.toList());
-    }
-
     @Transactional
     public BairroDto salvar(BairroDto bairroDto) {
+        validarBairroMunicipio(bairroDto);
         Bairro entidade = new Bairro();
         copiarDtoParaEntidade(bairroDto, entidade);
         entidade = bairroRepository.save(entidade);
@@ -71,6 +61,7 @@ public class BairroService {
     public BairroDto atualizar(BairroDto bairroDto) {
         Bairro entidade = bairroRepository.buscarPeloCodigoBairro(bairroDto.getCodigoBairro()).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Bairro não encontrado"));
+        validarBairroMunicipio(bairroDto);
         copiarDtoParaEntidade(bairroDto, entidade);
         entidade = bairroRepository.save(entidade);
         return new BairroDto(entidade);
@@ -99,5 +90,18 @@ public class BairroService {
         entidade.setCodigoMunicipio(municipioEntidade);
         entidade.setNome(dto.getNome().toUpperCase());
         entidade.setStatus(dto.getStatus());
+    }
+
+    // Valida um único Bairro com o mesmo Nome no Município
+    private void validarBairroMunicipio(BairroDto dto) {
+
+        List<Bairro> lista = bairroRepository.buscarPeloCodigoMunicipio(dto.getCodigoMunicipio());
+        for (Bairro item : lista) {
+            if (item.getNome().equalsIgnoreCase(dto.getNome()) && item.getCodigoBairro() != dto.getCodigoBairro()) {
+                throw new DataIntegrityException("Não foi possível incluir BAIRRO no banco de dados.<br>Motivo:" +
+                        " Já existe um(a) registro de bairro com o nome " + dto.getNome().toUpperCase() +
+                        " para o mesmo município cadastrado no banco de dados.");
+            }
+        }
     }
 }

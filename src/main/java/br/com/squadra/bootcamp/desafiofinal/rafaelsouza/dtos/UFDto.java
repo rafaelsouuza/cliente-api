@@ -14,23 +14,34 @@ public class UFDto implements Serializable {
 
     private Integer codigoUF;
 
-    @NotBlank(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo NOME é obrigatório.")
+    @NotBlank(message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: o campo NOME é obrigatório."
+    )
     @Size(min = 3, max = 60, message = "Não foi possível incluir UF no banco de dados." +
             "<br>Motivo: O campo NOME deve ter o tamanho entre 3 é 60 caracteres.")
-    @Pattern(regexp = "[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$", message = "Não foi possível incluir UF no banco de dados." +
-            "<br>Motivo: O campo NOME aceita apenas letras.")
+    @Pattern(regexp = "[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$",
+            message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: O campo NOME aceita apenas letras."
+    )
     private String nome;
 
-    @NotBlank(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo SIGLA é obrigatório.")
+    @NotBlank(message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: o campo SIGLA é obrigatório."
+    )
     @Size(max = 2, message = "ão foi possível incluir UF no banco de dados." +
-            "<br>Motivo: O campo SIGLA dever ter o tamanho máximo de 2 caracteres.")
+            "<br>Motivo: O campo SIGLA dever ter o tamanho máximo de 2 caracteres."
+    )
     @Pattern(regexp = "[A-Za]+$", message = "Não foi possível incluir UF no banco de dados." +
-            "<br>Motivo: O campo SIGLA aceita apenas letras.")
+            "<br>Motivo: O campo SIGLA aceita apenas letras."
+    )
     private String sigla;
 
-    @NotNull(message = "Não foi possível incluir UF no banco de dados.<br>Motivo: o campo STATUS é obrigatório.")
+    @NotNull(message = "Não foi possível incluir UF no banco de dados." +
+            "<br>Motivo: o campo STATUS é obrigatório."
+    )
     @StatusValid(message = "Não foi possível incluir UF no banco de dados." +
-            "<br>Motivo: O campo STATUS aceita apenas o valor inteiro 1 - (ATIVADO) ou 2 - (DESATIVADO).")
+            "<br>Motivo: O campo STATUS aceita apenas o valor inteiro 1 - (ATIVADO) ou 2 - (DESATIVADO)."
+    )
     private Integer status;
 
     public UFDto() {

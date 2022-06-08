@@ -1,10 +1,17 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.*;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.PessoaService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,53 +27,53 @@ public class PessoaResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<PessoaGetAllDto>> buscarTodos() {
-        List<PessoaGetAllDto> lista = pessoaService.buscarTodos();
-        return ResponseEntity.ok().body(lista);
-    }
+    public ResponseEntity<?> buscarPorParametros(
+            @RequestParam(value = "codigoPessoa", required = false) Integer codigoPessoa,
+            @RequestParam(value = "login", required = false) String login,
+            @RequestParam(value = "status", required = false) Integer status
+    ) {
+        List<PessoaDto> buscaPersonalizada;
+        // Buscar Pelo Status Pessoas
+        if (codigoPessoa == null && login == null && status != null) {
+            buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "nome")
-    public ResponseEntity<List<PessoaGetAllDto>> buscarTodosPeloNome(@RequestParam String nome) {
-        List<PessoaGetAllDto> lista = pessoaService.buscarTodosPeloNome(nome);
-        return ResponseEntity.ok().body(lista);
-    }
+        // Buscar Todos Pessoas
+        if (codigoPessoa == null && login == null) {
+            buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "codigoPessoa")
-    public ResponseEntity<PessoaDto> buscarPeloCodigoPessoa(@RequestParam Integer codigoPessoa) {
-        PessoaDto pessoaDto = pessoaService.buscarPeloCodigoPessoa(codigoPessoa);
-        return ResponseEntity.ok().body(pessoaDto);
-    }
+        //Buscar pelo codigoPessoa
+        if (login == null) {
+            PessoaDto buscarPeloCodigo = pessoaService.buscarPeloCodigoPessoa(codigoPessoa);
+            return ResponseEntity.ok().body(buscarPeloCodigo);
+        }
 
-    @GetMapping(params = "login")
-    public ResponseEntity<PessoaDto> buscarPeloLogin(@RequestParam String login) {
-        PessoaDto pessoaDto = pessoaService.buscarPeloLogin(login);
-        return ResponseEntity.ok().body(pessoaDto);
-    }
-
-    @GetMapping(params = "status")
-    public ResponseEntity<List<PessoaGetAllDto>> buscarPeloStatus(@RequestParam Integer status) {
-        List<PessoaGetAllDto> pessoaDto = pessoaService.buscarPeloStatus(status);
-        return ResponseEntity.ok().body(pessoaDto);
+        //Busca por todos parãmetros
+        buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
+        return ResponseEntity.ok().body(buscaPersonalizada);
     }
 
     @PostMapping
-    public ResponseEntity<List<PessoaGetAllDto>> salvar(@Valid @RequestBody PessoaInsertDto pessoaDto) {
+    public ResponseEntity<List<PessoaDto>> salvar(@Valid @RequestBody PessoaDto pessoaDto) {
         pessoaService.salvar(pessoaDto);
-        List<PessoaGetAllDto> lista = pessoaService.buscarTodos();
+        List<PessoaDto> lista = pessoaService.buscarTodos();
         return ResponseEntity.ok().body(lista);
     }
 
     @PutMapping
-    public ResponseEntity<List<PessoaGetAllDto>> atualizar(@Valid @RequestBody PessoaUpdateDto pessoaDto) {
+    public ResponseEntity<List<PessoaDto>> atualizar(@Valid @RequestBody PessoaDto pessoaDto) {
         pessoaService.atualizar(pessoaDto);
-        List<PessoaGetAllDto> lista = pessoaService.buscarTodos();
+        List<PessoaDto> lista = pessoaService.buscarTodos();
         return ResponseEntity.ok().body(lista);
     }
 
     @DeleteMapping("/{codigoPessoa}")
-    public ResponseEntity<List<PessoaGetAllDto>> deletar(@PathVariable Integer codigoPessoa) {
+    public ResponseEntity<List<PessoaDto>> deletar(@PathVariable Integer codigoPessoa) {
         pessoaService.deletar(codigoPessoa);
-        List<PessoaGetAllDto> lista = pessoaService.buscarTodos();
+        List<PessoaDto> lista = pessoaService.buscarTodos();
         return ResponseEntity.ok().body(lista);
     }
 }

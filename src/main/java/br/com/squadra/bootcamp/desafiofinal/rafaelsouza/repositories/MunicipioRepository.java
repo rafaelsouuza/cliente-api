@@ -16,6 +16,9 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
     @Query("SELECT c FROM Municipio c")
     List<Municipio> buscarTodosMunicipio();
 
+    @Query("SELECT c FROM Municipio c WHERE c.codigoUF.codigoUF = :codigoUF")
+    List<Municipio> buscarPeloCodigoUf(@Param("codigoUF") Integer codigoUF);
+
     @Query("SELECT c FROM Municipio c WHERE 1 = 1 AND "
             +   "(:codigoMunicipio IS NULL OR c.codigoMunicipio = :codigoMunicipio) AND "
             +   "(:codigoUF IS NULL OR c.codigoUF.codigoUF = :codigoUF) AND "
@@ -28,5 +31,4 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
             @Param("nome") String nome,
             @Param("status") Integer status
     );
-
 }

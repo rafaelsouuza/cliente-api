@@ -33,21 +33,20 @@ public class UFResource {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) Integer status
     ) {
-        List<UFDto> buscarTodosPeloStatus = ufService.buscarPeloStatus(status);
+        List<UFDto> buscaPersonalizada;
         if (codigoUf == null && sigla == null && nome == null && status != null) {
-            return ResponseEntity.ok().body(buscarTodosPeloStatus);
+            buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
         }
 
-        List<UFDto> buscarTodos = ufService.buscarTodosUf();
         if (codigoUf == null && sigla == null && nome == null) {
-            return ResponseEntity.ok().body(buscarTodos);
+            buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
         }
 
-        List<UFDto> buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
+        buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
         for (UFDto item : buscaPersonalizada) {
-            if (buscaPersonalizada.size() > 0) {
-                return ResponseEntity.ok().body(item);
-            }
+            return ResponseEntity.ok().body(item);
         }
         return ResponseEntity.ok().body(buscaPersonalizada);
     }

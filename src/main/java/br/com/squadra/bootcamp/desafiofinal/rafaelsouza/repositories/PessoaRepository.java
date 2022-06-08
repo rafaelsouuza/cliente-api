@@ -16,13 +16,18 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Integer> {
     @Query("SELECT c FROM Pessoa c")
     List<Pessoa> buscarTodasPessoa();
 
-    @Query("SELECT c FROM Pessoa c WHERE c.nome = :nome")
-    List<Pessoa> buscarPeloNome(@Param("nome") String nome);
-
     @Query("SELECT c FROM Pessoa c WHERE c.login = :login")
     Optional<Pessoa> buscarPeloLogin(@Param("login") String login);
 
-    @Query("SELECT c FROM Pessoa c WHERE c.status = :status")
-    List<Pessoa> bucarPeloStatus(@Param("status") Integer status);
+    @Query("SELECT c FROM Pessoa c WHERE 1 = 1 AND "
+            +   "(:codigoPessoa IS NULL OR c.codigoPessoa = :codigoPessoa) AND "
+            +   "(:login IS NULL OR c.login = :login) AND "
+            +   "(:status IS NULL OR c.status = :status)"
+    )
+    List<Pessoa> buscarPorParametro(
+            @Param("codigoPessoa") Integer codigoPessoa,
+            @Param("login") String login,
+            @Param("status") Integer status
+    );
 
 }

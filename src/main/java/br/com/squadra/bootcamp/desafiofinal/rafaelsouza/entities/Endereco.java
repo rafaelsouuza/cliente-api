@@ -1,12 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -15,7 +9,15 @@ public class Endereco implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "SEQUENCE_ENDERECO"
+    )
+    @SequenceGenerator(
+            name = "SEQUENCE_ENDERECO",
+            allocationSize = 1
+    )
+    @Column(name = "CODIGO_ENDERECO")
     private Integer codigoEndereco;
 
     @ManyToOne
@@ -26,7 +28,9 @@ public class Endereco implements Serializable {
     @JoinColumn(name = "CODIGO_PESSOA")
     private Pessoa codigoPessoa;
 
+    @Column(name = "NOME_RUA")
     private String nomeRua;
+
     private String numero;
     private String complemento;
     private String cep;

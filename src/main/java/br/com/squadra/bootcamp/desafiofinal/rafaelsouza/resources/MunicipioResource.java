@@ -1,5 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.MunicipioService;
 import org.springframework.http.ResponseEntity;
@@ -55,9 +56,10 @@ public class MunicipioResource {
         //Buscar pelo codigoMunicipio
         if (nome == null) {
             buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada.get(0));
+            for (MunicipioDto item : buscaPersonalizada) {
+                return ResponseEntity.ok().body(item);
+            }
         }
-
         // Busca por todos parâmetros
         buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
         return ResponseEntity.ok().body(buscaPersonalizada);

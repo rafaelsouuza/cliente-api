@@ -6,22 +6,22 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.EnderecoDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioGetDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaDto;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaGetAllDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Bairro;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Endereco;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Municipio;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Pessoa;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.BairroRepository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.EnderecoRepository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.MunicipioRepository;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.PessoaRepository;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.DataIntegrityException;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,25 +47,17 @@ public class PessoaService {
     }
 
     @Transactional(readOnly = true)
-    public List<PessoaGetAllDto> buscarTodos() {
+    public List<PessoaDto> buscarTodos() {
 
         List<Pessoa> lista = pessoaRepository.buscarTodasPessoa();
-        return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
+        return lista.stream().map(elemento -> new PessoaDto(elemento)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<PessoaGetAllDto> buscarTodosPeloNome(String nome) {
+    public List<PessoaDto> buscarPorParametros(Integer codigoPessoa, String login, Integer status) {
 
-        List<Pessoa> lista = pessoaRepository.buscarPeloNome(nome);
-        return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public PessoaDto buscarPeloLogin(String login) {
-
-        Pessoa entidade = pessoaRepository.buscarPeloLogin(login).orElseThrow(
-                () -> new ResourceNotFoundException("Login não encontrado"));
-        return buscarPessoaComEndereco(entidade);
+        List<Pessoa> lista = pessoaRepository.buscarPorParametro(codigoPessoa, login, status);
+        return lista.stream().map(elemento -> new PessoaDto(elemento)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -76,15 +68,10 @@ public class PessoaService {
         return buscarPessoaComEndereco(entidade);
     }
 
-    @Transactional(readOnly = true)
-    public List<PessoaGetAllDto> buscarPeloStatus(Integer status) {
-        List<Pessoa> lista = pessoaRepository.bucarPeloStatus(status);
-        return lista.stream().map(elemento -> new PessoaGetAllDto(elemento)).collect(Collectors.toList());
-    }
-
     @Transactional
     public PessoaDto salvar(PessoaDto pessoaDto) {
 
+        validarPeloLogin(pessoaDto);
         Pessoa entidade = new Pessoa();
         copiarDtoParaEntidadeSalvar(pessoaDto, entidade);
         entidade = pessoaRepository.save(entidade);
@@ -96,18 +83,28 @@ public class PessoaService {
 
         Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(pessoaDto.getCodigoPessoa()).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
+        validarPeloLogin(pessoaDto);
         copiarDtoParaEntidadeAtualizar(pessoaDto, entidade);
         entidade = pessoaRepository.save(entidade);
         return new PessoaDto(entidade);
     }
 
     @Transactional
-    public void deletar(Integer codigoMunicipio) {
+    public void deletar(Integer codigoPessoa) {
 
-        Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(codigoMunicipio).orElseThrow(
+        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(codigoPessoa).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
         entidade.setStatus(0);
-        municipioRepository.save(entidade);
+        pessoaRepository.save(entidade);
+    }
+
+    private void validarPeloLogin(PessoaDto pessoaDto) {
+        Optional<Pessoa> entidade = pessoaRepository.buscarPeloLogin(pessoaDto.getLogin());
+        if (entidade.isPresent() && entidade.get().getCodigoPessoa() != pessoaDto.getCodigoPessoa()) {
+            throw new DataIntegrityException("Não foi possível incluir PESSOA no banco de dados.<br>Motivo:" +
+                    " Já existe um(a) registro de PESSOA com o login " + pessoaDto.getLogin() +
+                    " cadastrado no banco de dados.");
+        }
     }
 
     private PessoaDto buscarPessoaComEndereco(Pessoa entidade) {

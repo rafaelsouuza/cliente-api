@@ -5,6 +5,7 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Municipio;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.UF;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.repositories.MunicipioRepository;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.DataIntegrityException;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,7 @@ public class MunicipioService {
 
     @Transactional
     public MunicipioDto salvar(MunicipioDto municipioDto) {
+        validarMunicipioUF(municipioDto);
         Municipio entidade = new Municipio();
         copiarDtoParaEntidade(municipioDto, entidade);
         entidade = municipioRepository.save(entidade);
@@ -55,6 +57,7 @@ public class MunicipioService {
     public MunicipioDto atualizar(MunicipioDto municipioDto) {
         Municipio entidade = municipioRepository.buscarPeloCodigoMunicipio(municipioDto.getCodigoMunicipio()).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Município não encontrado"));
+        validarMunicipioUF(municipioDto);
         copiarDtoParaEntidade(municipioDto, entidade);
         entidade = municipioRepository.save(entidade);
         return new MunicipioDto(entidade);
@@ -79,5 +82,17 @@ public class MunicipioService {
         entidade.setCodigoUF(ufEntitidade);
         entidade.setNome(dto.getNome().toUpperCase());
         entidade.setStatus(dto.getStatus());
+    }
+
+    // Valida um único Municipio com o mesmo Nome por UF
+    private void validarMunicipioUF(MunicipioDto dto) {
+
+        List<Municipio> lista = municipioRepository.buscarPeloCodigoUf(dto.getCodigoUF());
+        for (Municipio item : lista) {
+            if (item.getNome().equalsIgnoreCase(dto.getNome()) && item.getCodigoMunicipio() != dto.getCodigoMunicipio()) {
+                throw new DataIntegrityException("Não foi possível incluir MUNICÍPIO no banco de dados.<br>Motivo:" +
+                        " Já existe um(a) registro de MUNICÍPIO com o nome " + dto.getNome().toUpperCase() + " cadastrado no banco de dados.");
+            }
+        }
     }
 }

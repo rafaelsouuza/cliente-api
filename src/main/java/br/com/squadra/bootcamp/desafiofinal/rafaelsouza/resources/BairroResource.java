@@ -29,40 +29,48 @@ public class BairroResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<BairroDto>> buscarTodos() {
-        List<BairroDto> lista = bairroService.buscarTodos();
-        return ResponseEntity.ok().body(lista);
-    }
+    public ResponseEntity<?> buscarPorParametros(
+            @RequestParam(value = "codigoBairro", required = false) Integer codigoBairro,
+            @RequestParam(value = "codigoMunicipio", required = false) Integer codigoMunicipio,
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "status", required = false) Integer status
+    ) {
+        List<BairroDto> buscaPersonalizada;
+        // Buscar Pelo Status do Bairro
+        if (codigoBairro == null && codigoMunicipio == null && nome == null && status != null) {
+            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "codigoBairro")
-    public ResponseEntity<BairroDto> buscarPeloCodigoBairro(@RequestParam Integer codigoBairro) {
-        BairroDto bairroDto = bairroService.buscarPeloCodigoBairro(codigoBairro);
-        return ResponseEntity.ok().body(bairroDto);
-    }
+        // Buscar Todos Bairro
+        if (codigoBairro == null && codigoMunicipio == null && nome == null) {
+            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "codigoMunicipio")
-    public ResponseEntity<List<BairroDto>> buscarTodosPeloMunicipio(@RequestParam Integer codigoMunicipio) {
-        List<BairroDto> lista = bairroService.buscarPeloCodigoMunicipio(codigoMunicipio);
-        return ResponseEntity.ok().body(lista);
-    }
+        //Buscar pelo codigoMunicipio
+        if (codigoBairro == null && nome == null) {
+            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+            return ResponseEntity.ok().body(buscaPersonalizada);
+        }
 
-    @GetMapping(params = "nome")
-    public ResponseEntity<BairroDto> buscarPeloNome(@RequestParam String nome) {
-        BairroDto bairro = bairroService.buscarPelaNome(nome);
-        return ResponseEntity.ok().body(bairro);
-    }
-
-    @GetMapping(params = "status")
-    public ResponseEntity<List<BairroDto>> buscarPeloStatus(@RequestParam Integer status) {
-        List<BairroDto> uf = bairroService.buscarPeloStatus(status);
-        return ResponseEntity.ok().body(uf);
+        //Buscar pelo codigoBairro
+        if (nome == null) {
+            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+            for (BairroDto item : buscaPersonalizada) {
+                return ResponseEntity.ok().body(item);
+            }
+        }
+        // Busca por todos parâmetros
+        buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+        return ResponseEntity.ok().body(buscaPersonalizada);
     }
 
     @PostMapping
     public ResponseEntity<List<BairroDto>> salvar(@Valid @RequestBody BairroDto bairroDto) {
         bairroService.salvar(bairroDto);
         List<BairroDto> lista = bairroService.buscarTodos();
-        return ResponseEntity.status(HttpStatus.CREATED).body(lista);
+        return ResponseEntity.ok().body(lista);
     }
 
     @PutMapping
