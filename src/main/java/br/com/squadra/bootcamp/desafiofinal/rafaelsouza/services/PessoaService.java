@@ -54,16 +54,33 @@ public class PessoaService {
     }
 
     @Transactional(readOnly = true)
-    public List<PessoaDto> buscarPorParametros(Integer codigoPessoa, String login, Integer status) {
+    public List<PessoaDto> buscarPorParametros(String codigoPessoa, String login, String status) {
 
-        List<Pessoa> lista = pessoaRepository.buscarPorParametro(codigoPessoa, login, status);
+        validarParametroInteger(codigoPessoa, status);
+        Integer valorCodigoPessoa = null;
+        Integer valorStatus = null;
+
+        if (codigoPessoa != null) {
+            valorCodigoPessoa = Integer.parseInt(codigoPessoa);
+        }
+        if (status != null) {
+            valorStatus = Integer.parseInt(status);
+        }
+
+        List<Pessoa> lista = pessoaRepository.buscarPorParametro(valorCodigoPessoa, login, valorStatus);
         return lista.stream().map(elemento -> new PessoaDto(elemento)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public PessoaDto buscarPeloCodigoPessoa(Integer codigoPessoa) {
+    public PessoaDto buscarPeloCodigoPessoa(String codigoPessoa) {
+        validarParametroInteger(codigoPessoa, null);
+        Integer valorCodigoPessoa = null;
 
-        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(codigoPessoa).orElseThrow(
+        if (codigoPessoa != null) {
+            valorCodigoPessoa = Integer.parseInt(codigoPessoa);
+        }
+
+        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(valorCodigoPessoa).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
         return buscarPessoaComEndereco(entidade);
     }
@@ -150,6 +167,10 @@ public class PessoaService {
         entidade.setSenha(dto.getSenha());
         entidade.setStatus(dto.getStatus());
 
+        if (dto.getEnderecos().isEmpty()) {
+            throw new DataIntegrityException("Não foi possível incluir PESSOA no banco de dados.<br>Motivo:" +
+                    " Não é possível cadastrar pessoa sem endereço.");
+        }
         for (EnderecoDto enderecoDto : dto.getEnderecos()) {
 
             Endereco endereco = new Endereco();
@@ -168,6 +189,11 @@ public class PessoaService {
         entidade.setLogin(dto.getLogin());
         entidade.setSenha(dto.getSenha());
         entidade.setStatus(dto.getStatus());
+
+        if (dto.getEnderecos().isEmpty()) {
+            throw new DataIntegrityException("Não foi possível incluir PESSOA no banco de dados.<br>Motivo:" +
+                    " Não é possível cadastrar pessoa sem endereço.");
+        }
 
         List<Endereco> novoEndereco = new ArrayList<>();
 
@@ -206,5 +232,25 @@ public class PessoaService {
         endereco.setNumero(enderecoDto.getNumero());
         endereco.setComplemento(enderecoDto.getComplemento());
         endereco.setCep(enderecoDto.getCep());
+    }
+
+    private void validarParametroInteger(String codigoPessoa, String status) {
+        try {
+            if (codigoPessoa != null) {
+                Integer.parseInt(codigoPessoa);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar PESSOA no banco de dados." +
+                    "<br>Motivo: O valor do campo codigoPessoa precisa ser número, e você passo '" + codigoPessoa + "'.");
+        }
+
+        try {
+            if (status != null) {
+                Integer.parseInt(status);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar PESSOA no banco de dados." +
+                    "<br>Motivo: O valor do campo status precisa ser número, e você passo '" + status + "'.");
+        }
     }
 }

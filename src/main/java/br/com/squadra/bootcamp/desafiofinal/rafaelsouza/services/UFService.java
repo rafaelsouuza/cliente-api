@@ -8,7 +8,6 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.exceptions.Reso
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,9 +28,20 @@ public class UFService {
     }
 
     @Transactional(readOnly = true)
-    public List<UFDto> buscarPorParametros(Integer codigoUf, String sigla, String nome, Integer status) {
+    public List<UFDto> buscarPorParametros(String codigoUf, String sigla, String nome, String status) {
 
-        List<UF> lista = ufRespository.buscarPorParametro(codigoUf, sigla, nome, status);
+        validarParametroInteger(codigoUf, status);
+        Integer valorCodigoUf = null;
+        Integer valorStatus = null;
+
+        if (codigoUf != null) {
+            valorCodigoUf = Integer.parseInt(codigoUf);
+        }
+        if (status != null) {
+            valorStatus = Integer.parseInt(status);
+        }
+
+        List<UF> lista = ufRespository.buscarPorParametro(valorCodigoUf, sigla, nome, valorStatus);
         return lista.stream().map(elemento -> new UFDto(elemento)).collect(Collectors.toList());
     }
 
@@ -86,6 +96,26 @@ public class UFService {
         if (entidade.isPresent() && entidade.get().getCodigoUF() != dto.getCodigoUF()) {
             throw new DataIntegrityException("Não foi possível incluir UF no banco de dados.<br>Motivo:" +
                     " Já existe um(a) registro de UF com o nome " + dto.getNome().toUpperCase() + " cadastrado no banco de dados.");
+        }
+    }
+
+    private void validarParametroInteger(String codigoUf, String status) {
+        try {
+            if (codigoUf != null) {
+                Integer.parseInt(codigoUf);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar UF no banco de dados." +
+                    "<br>Motivo: O valor do campo codigoUf precisa ser número, e você passo '" + codigoUf + "'.");
+        }
+
+        try {
+            if (status != null) {
+                Integer.parseInt(status);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar UF no banco de dados." +
+                    "<br>Motivo: O valor do campo status precisa ser número, e você passo '" + status + "'.");
         }
     }
 }

@@ -28,10 +28,10 @@ public class UFResource {
 
     @GetMapping
     public ResponseEntity<?> buscarPorParametros(
-            @RequestParam(value = "codigoUF", required = false) Integer codigoUf,
+            @RequestParam(value = "codigoUF", required = false) String codigoUf,
             @RequestParam(value = "sigla", required = false) String sigla,
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "status", required = false) Integer status
+            @RequestParam(value = "status", required = false) String status
     ) {
         List<UFDto> buscaPersonalizada;
         if (codigoUf == null && sigla == null && nome == null && status != null) {

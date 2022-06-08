@@ -29,10 +29,10 @@ public class MunicipioResource {
 
     @GetMapping
     public ResponseEntity<?> buscarPorParametros(
-            @RequestParam(value = "codigoMunicipio", required = false) Integer codigoMunicipio,
-            @RequestParam(value = "codigoUF", required = false) Integer codigoUF,
+            @RequestParam(value = "codigoMunicipio", required = false) String codigoMunicipio,
+            @RequestParam(value = "codigoUF", required = false) String codigoUF,
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "status", required = false) Integer status
+            @RequestParam(value = "status", required = false) String status
     ) {
         List<MunicipioDto> buscaPersonalizada;
         // Buscar Pelo Status do Município

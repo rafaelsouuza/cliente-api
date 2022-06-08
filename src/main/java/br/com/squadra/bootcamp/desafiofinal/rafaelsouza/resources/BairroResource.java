@@ -30,10 +30,10 @@ public class BairroResource {
 
     @GetMapping
     public ResponseEntity<?> buscarPorParametros(
-            @RequestParam(value = "codigoBairro", required = false) Integer codigoBairro,
-            @RequestParam(value = "codigoMunicipio", required = false) Integer codigoMunicipio,
+            @RequestParam(value = "codigoBairro", required = false) String codigoBairro,
+            @RequestParam(value = "codigoMunicipio", required = false) String codigoMunicipio,
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "status", required = false) Integer status
+            @RequestParam(value = "status", required = false) String status
     ) {
         List<BairroDto> buscaPersonalizada;
         // Buscar Pelo Status do Bairro

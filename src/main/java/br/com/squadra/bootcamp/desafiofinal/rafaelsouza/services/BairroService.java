@@ -35,9 +35,27 @@ public class BairroService {
     }
 
     @Transactional(readOnly = true)
-    public List<BairroDto> buscarPorParametros(Integer codigoBairro, Integer codigoMunicipio, String nome, Integer status) {
+    public List<BairroDto> buscarPorParametros(String codigoBairro, String codigoMunicipio, String nome, String status) {
 
-        List<Bairro> lista = bairroRepository.buscarPorParametro(codigoBairro, codigoMunicipio, nome, status);
+        validarParametroInteger(codigoBairro, codigoMunicipio, status);
+
+        Integer valorBairro = null;
+        Integer valorMunicipio = null;
+        Integer valorStatus = null;
+
+        if (codigoBairro != null) {
+            valorBairro = Integer.parseInt(codigoBairro);
+        }
+
+        if (codigoMunicipio != null) {
+            valorMunicipio = Integer.parseInt(codigoMunicipio);
+        }
+
+        if (status != null) {
+            valorStatus = Integer.parseInt(status);
+        }
+
+        List<Bairro> lista = bairroRepository.buscarPorParametro(valorBairro, valorMunicipio, nome, valorStatus);
         return lista.stream().map(elemento -> new BairroDto(elemento)).collect(Collectors.toList());
     }
 
@@ -102,6 +120,35 @@ public class BairroService {
                         " Já existe um(a) registro de bairro com o nome " + dto.getNome().toUpperCase() +
                         " para o mesmo município cadastrado no banco de dados.");
             }
+        }
+    }
+
+    private void validarParametroInteger(String codigoBairro, String codigoMunicipio, String status) {
+        try {
+            if (codigoBairro != null) {
+                Integer.parseInt(codigoBairro);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar BAIRRO no banco de dados." +
+                    "<br>Motivo: O valor do campo codigoBairro precisa ser número, e você passou '" + codigoBairro + "'.");
+        }
+
+        try {
+            if (codigoMunicipio != null) {
+                Integer.parseInt(codigoMunicipio);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar BAIRRO no banco de dados." +
+                    "<br>Motivo: O valor do campo codigoMunicipio precisa ser número, e você passou '" + codigoMunicipio + "'.");
+        }
+
+        try {
+            if (status != null) {
+                Integer.parseInt(status);
+            }
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("Não foi possível consultar BAIRRO no banco de dados." +
+                    "<br>Motivo: O valor do campo status precisa ser número, e você passou '" + status + "'.");
         }
     }
 }

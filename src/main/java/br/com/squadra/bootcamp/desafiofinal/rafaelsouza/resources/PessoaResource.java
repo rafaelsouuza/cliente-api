@@ -28,9 +28,9 @@ public class PessoaResource {
 
     @GetMapping
     public ResponseEntity<?> buscarPorParametros(
-            @RequestParam(value = "codigoPessoa", required = false) Integer codigoPessoa,
+            @RequestParam(value = "codigoPessoa", required = false) String codigoPessoa,
             @RequestParam(value = "login", required = false) String login,
-            @RequestParam(value = "status", required = false) Integer status
+            @RequestParam(value = "status", required = false) String status
     ) {
         List<PessoaDto> buscaPersonalizada;
         // Buscar Pelo Status Pessoas

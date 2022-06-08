@@ -57,6 +57,7 @@ public class PessoaDto implements Serializable {
     }
 
     public PessoaDto(Pessoa entity) {
+
         this.codigoPessoa = entity.getCodigoPessoa();
         this.nome = entity.getNome();
         this.sobrenome = entity.getSobreNome();
