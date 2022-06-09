@@ -1,5 +1,6 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.ResponseEntity;
@@ -33,20 +34,11 @@ public class UFResource {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) String status
     ) {
-        List<UFDto> buscaPersonalizada;
-        if (codigoUf == null && sigla == null && nome == null && status != null) {
-            buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        if (codigoUf == null && sigla == null && nome == null) {
-            buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
-        for (UFDto item : buscaPersonalizada) {
-            return ResponseEntity.ok().body(item);
+        List<UFDto> buscaPersonalizada = ufService.buscarPorParametros(codigoUf, sigla, nome, status);
+        if (codigoUf != null || sigla != null || nome != null) {
+            for (UFDto item : buscaPersonalizada) {
+                return ResponseEntity.ok().body(item);
+            }
         }
         return ResponseEntity.ok().body(buscaPersonalizada);
     }

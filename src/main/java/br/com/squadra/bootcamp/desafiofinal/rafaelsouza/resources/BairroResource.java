@@ -2,6 +2,7 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.BairroService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,34 +36,12 @@ public class BairroResource {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) String status
     ) {
-        List<BairroDto> buscaPersonalizada;
-        // Buscar Pelo Status do Bairro
-        if (codigoBairro == null && codigoMunicipio == null && nome == null && status != null) {
-            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        // Buscar Todos Bairro
-        if (codigoBairro == null && codigoMunicipio == null && nome == null) {
-            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        //Buscar pelo codigoMunicipio
-        if (codigoBairro == null && nome == null) {
-            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        //Buscar pelo codigoBairro
-        if (nome == null) {
-            buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+        List<BairroDto> buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
+        if (codigoBairro != null) {
             for (BairroDto item : buscaPersonalizada) {
                 return ResponseEntity.ok().body(item);
             }
         }
-        // Busca por todos parâmetros
-        buscaPersonalizada = bairroService.buscarPorParametros(codigoBairro, codigoMunicipio, nome, status);
         return ResponseEntity.ok().body(buscaPersonalizada);
     }
 

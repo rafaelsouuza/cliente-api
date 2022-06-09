@@ -32,27 +32,11 @@ public class PessoaResource {
             @RequestParam(value = "login", required = false) String login,
             @RequestParam(value = "status", required = false) String status
     ) {
-        List<PessoaDto> buscaPersonalizada;
-        // Buscar Pelo Status Pessoas
-        if (codigoPessoa == null && login == null && status != null) {
-            buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
+        List<PessoaDto> buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
+        if (codigoPessoa != null) {
+            PessoaDto buscarPeLoCodigo = pessoaService.buscarPeloCodigoPessoa(codigoPessoa);
+            return ResponseEntity.ok(buscarPeLoCodigo);
         }
-
-        // Buscar Todos Pessoas
-        if (codigoPessoa == null && login == null) {
-            buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        //Buscar pelo codigoPessoa
-        if (login == null) {
-            PessoaDto buscarPeloCodigo = pessoaService.buscarPeloCodigoPessoa(codigoPessoa);
-            return ResponseEntity.ok().body(buscarPeloCodigo);
-        }
-
-        //Busca por todos parãmetros
-        buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
         return ResponseEntity.ok().body(buscaPersonalizada);
     }
 

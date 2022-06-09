@@ -1,6 +1,5 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.MunicipioService;
 import org.springframework.http.ResponseEntity;
@@ -34,34 +33,12 @@ public class MunicipioResource {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) String status
     ) {
-        List<MunicipioDto> buscaPersonalizada;
-        // Buscar Pelo Status do Município
-        if (codigoMunicipio == null && codigoUF == null && nome == null && status != null) {
-            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        // Buscar Todos Município
-        if (codigoMunicipio == null && codigoUF == null && nome == null) {
-            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        //Buscar pelo codigoUF
-        if (codigoMunicipio == null && nome == null) {
-            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
-            return ResponseEntity.ok().body(buscaPersonalizada);
-        }
-
-        //Buscar pelo codigoMunicipio
-        if (nome == null) {
-            buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+        List<MunicipioDto> buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
+        if (codigoMunicipio != null) {
             for (MunicipioDto item : buscaPersonalizada) {
                 return ResponseEntity.ok().body(item);
             }
         }
-        // Busca por todos parâmetros
-        buscaPersonalizada = municipioService.buscarPorParametros(codigoMunicipio, codigoUF, nome, status);
         return ResponseEntity.ok().body(buscaPersonalizada);
     }
 

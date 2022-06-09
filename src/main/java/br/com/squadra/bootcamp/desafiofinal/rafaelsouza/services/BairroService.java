@@ -89,7 +89,7 @@ public class BairroService {
     public void deletar(Integer codigoBairro) {
         Bairro entidade = bairroRepository.buscarPeloCodigoBairro(codigoBairro).orElseThrow(
                 () -> new ResourceNotFoundException("Codigo Bairro não encontrado"));
-        entidade.setStatus(0);
+        entidade.setStatus(2);
         bairroRepository.save(entidade);
     }
 

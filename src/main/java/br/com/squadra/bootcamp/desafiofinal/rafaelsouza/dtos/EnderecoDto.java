@@ -2,9 +2,7 @@ package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Endereco;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 public class EnderecoDto implements Serializable {
@@ -12,23 +10,47 @@ public class EnderecoDto implements Serializable {
 
     private Integer codigoEndereco;
 
-    @Positive(message = "Insira um valor positivo")
+    @NotNull(message = "Não foi possível incluir ENDEREÇO no banco de dados." +
+            "<br>Motivo: o campo codigoBairro é obrigatório."
+    )
+    @Positive(message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: o campo codigoBairro não pode ser negativo."
+    )
+    @Min(value = 1)
+    @Digits(integer = 9, fraction = 0, message = "Não foi possível incluir ENDEREÇO no banco de dados." +
+            "<br>Motivo: o campo codigoBairro tem o limite máximo de 9 digitos."
+    )
     private Integer codigoBairro;
 
     private Integer codigoPessoa;
 
-    @NotBlank(message = "O campo NOME DA RUA é requerido")
-    @Size(min = 3, max = 256, message = "O NOME DA RUA deve ter entre 3 é 256 caracteres")
+    @NotBlank(message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: o campo nomeRua é obrigatório."
+    )
+    @Size(min = 3, max = 256, message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: O campo nomeRua deve ter o tamanho entre 3 é 256 caracteres."
+    )
     private String nomeRua;
 
-    @NotBlank(message = "O campo NUMERO é requerido")
-    @Size(min = 3, max = 10, message = "O NUMERO deve ter entre 5 é 256 caracteres")
+    @NotBlank(message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: o campo numero é obrigatório."
+    )
+    @Size(min = 1, max = 10, message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: O campo numero deve ter o tamanho entre 1 é 10 caracteres."
+    )
     private String numero;
 
+    @Size(max = 20, message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: O campo complemento deve ter o tamanho máximo de 20 caracteres."
+    )
     private String complemento;
 
-    @NotBlank(message = "O campo CEP é requerido")
-    @Size(min = 3, max = 10, message = "O CEP deve ter até 10 caracteres")
+    @NotBlank(message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: o campo cep é obrigatório."
+    )
+    @Size(min = 1, max = 10, message = "Não foi possível incluir PESSOA no banco de dados." +
+            "<br>Motivo: O campo cep deve ter o tamanho entre 1 é 10 caracteres."
+    )
     private String cep;
 
     private BairroDto bairro;
