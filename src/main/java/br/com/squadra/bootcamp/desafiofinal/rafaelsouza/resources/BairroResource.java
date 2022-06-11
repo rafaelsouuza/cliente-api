@@ -1,10 +1,7 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.BairroDto;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.BairroService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

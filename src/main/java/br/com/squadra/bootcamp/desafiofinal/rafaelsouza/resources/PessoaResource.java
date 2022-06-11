@@ -1,6 +1,8 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.EnderecoDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.PessoaDto;
+import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Pessoa;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.PessoaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pessoa")
@@ -34,10 +38,22 @@ public class PessoaResource {
     ) {
         List<PessoaDto> buscaPersonalizada = pessoaService.buscarPorParametros(codigoPessoa, login, status);
         if (codigoPessoa != null) {
-            PessoaDto buscarPeLoCodigo = pessoaService.buscarPeloCodigoPessoa(codigoPessoa);
-            return ResponseEntity.ok(buscarPeLoCodigo);
+            for (PessoaDto resultado : buscaPersonalizada) {
+                return ResponseEntity.ok(resultado);
+            }
         }
-        return ResponseEntity.ok().body(buscaPersonalizada);
+
+        List<PessoaDto> listaSemEndereco = new ArrayList<>();
+        for (PessoaDto item : buscaPersonalizada) {
+            listaSemEndereco.add(new PessoaDto(new Pessoa(item.getCodigoPessoa(),
+                    item.getNome(),
+                    item.getSobrenome(),
+                    item.getIdade(),
+                    item.getLogin(),
+                    item.getSenha(),
+                    item.getStatus())));
+        }
+        return ResponseEntity.ok().body(listaSemEndereco);
     }
 
     @PostMapping

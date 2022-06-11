@@ -29,5 +29,4 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Integer> {
             @Param("login") String login,
             @Param("status") Integer status
     );
-
 }

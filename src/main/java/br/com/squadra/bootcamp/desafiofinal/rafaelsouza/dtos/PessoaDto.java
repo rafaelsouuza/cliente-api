@@ -5,7 +5,12 @@ import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.entities.Pessoa;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.validations.annotatios.StatusValid;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,11 +105,17 @@ public class PessoaDto implements Serializable {
 
         for (Endereco e : enderecos) {
             EnderecoDto endereco = new EnderecoDto();
+            endereco.setCodigoEndereco(e.getCodigoEndereco());
+            endereco.setCodigoBairro(e.getCodigoBairro().getCodigoBairro());
+            endereco.setCodigoPessoa(e.getCodigoPessoa().getCodigoPessoa());
             endereco.setNumero(e.getNumero());
             endereco.setNomeRua(e.getNomeRua());
             endereco.setNumero(e.getNumero());
             endereco.setComplemento(e.getComplemento());
             endereco.setCep(e.getCep());
+
+            BairroDto bairro = new BairroDto(e.getCodigoBairro());
+            endereco.setBairro(bairro);
             this.enderecos.add(endereco);
         }
     }
@@ -167,5 +178,9 @@ public class PessoaDto implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public void setEnderecos(List<EnderecoDto> enderecos) {
+        this.enderecos = enderecos;
     }
 }

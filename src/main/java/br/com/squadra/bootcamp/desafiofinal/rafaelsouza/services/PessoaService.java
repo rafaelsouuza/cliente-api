@@ -68,21 +68,11 @@ public class PessoaService {
         }
 
         List<Pessoa> lista = pessoaRepository.buscarPorParametro(valorCodigoPessoa, login, valorStatus);
-        return lista.stream().map(elemento -> new PessoaDto(elemento)).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public PessoaDto buscarPeloCodigoPessoa(String codigoPessoa) {
-        validarParametroInteger(codigoPessoa, null);
-        Integer valorCodigoPessoa = null;
-
-        if (codigoPessoa != null) {
-            valorCodigoPessoa = Integer.parseInt(codigoPessoa);
+        List<PessoaDto> dto = new ArrayList<>();
+        for (Pessoa item : lista) {
+            dto.add(buscarPessoaComEndereco(item));
         }
-
-        Pessoa entidade = pessoaRepository.buscarPeloCodigoPessoa(valorCodigoPessoa).orElseThrow(
-                () -> new ResourceNotFoundException("Codigo Pessoa não encontrado"));
-        return buscarPessoaComEndereco(entidade);
+        return dto;
     }
 
     @Transactional

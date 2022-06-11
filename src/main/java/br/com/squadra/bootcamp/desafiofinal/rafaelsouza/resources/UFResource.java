@@ -1,6 +1,5 @@
 package br.com.squadra.bootcamp.desafiofinal.rafaelsouza.resources;
 
-import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.MunicipioDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.dtos.UFDto;
 import br.com.squadra.bootcamp.desafiofinal.rafaelsouza.services.UFService;
 import org.springframework.http.ResponseEntity;
